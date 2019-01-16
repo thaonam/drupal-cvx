@@ -1,0 +1,45 @@
+<?php
+/**
+ * @file
+ * Installation of subdomain schema.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function subdomain_schema() {
+  $schema['subdomain'] = array(
+    'description' => 'Subdomain list.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary id of table.',
+        'type' => 'serial',
+        'not null' => true,
+      ),
+      'uid' => array(
+        'description' => 'Relates to the Drupal user.',
+        'type' => 'int',
+        'not null' => true,
+      ),
+      'subdomain' => array(
+        'description' => 'Subdomain name.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'uid'    => array('uid'),
+      'subdomain'  => array(array('subdomain', 4)),
+    ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'uid' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,198 @@
+.blog img {
+  width: 100%;
+  margin-bottom: 15px; }
+
+.blog .title {
+  font-size: 18px;
+  color: #090909;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
+.blog .title:hover {
+  color: #ff6600; }
+.blog .title a {
+  color: inherit; }
+@media (min-width: 768px) {
+  .blog .title {
+    font-size: 24px; } }
+
+.blog .description {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 20px; }
+
+.blog .blog-info {
+  background-color: #f2f7f9;
+  margin-bottom: 22px; }
+.blog .blog-info li {
+  padding: 8px 10px;
+  font-weight: 300;
+  color: #525252;
+  display: inline-block; }
+@media (min-width: 576px) {
+  .blog .blog-info li {
+    padding: 8px 30px; } }
+.blog .blog-info li:not(:first-child) {
+  border-left: solid 1px #d9e2e5; }
+.blog .blog-info li i {
+  color: #02b9fd; }
+
+.blog-small {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; }
+.blog-small:hover .blog-title {
+  color: #fd7b05; }
+.blog-small .blog-title {
+  font-size: 16px;
+  color: #353535;
+  font-weight: 500;
+  margin-bottom: 15px;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease; }
+@media (min-width: 768px) {
+  .blog-small .blog-title {
+    font-size: 13px; } }
+.blog-small .blog-title a {
+  color: inherit; }
+.blog-small .blog-img {
+  width: 35%;
+  padding-right: 15px; }
+.blog-small .blog-img img {
+  width: 100%; }
+.blog-small .blog-body {
+  width: 65%; }
+.blog-small .blog-info {
+  font-weight: 300;
+  color: #525252; }
+.blog-small .blog-info li {
+  display: inline-block; }
+.blog-small .blog-info li:first-child {
+  margin-right: 20px; }
+.blog-small .blog-info i {
+  color: #02b9fd; }
+
+.pager {
+  margin: 0 0 30px 0; }
+@media (min-width: 768px) {
+  .pager {
+    margin-bottom: 65px; } }
+.pager .pagination {
+  margin: 0; }
+.pager .pagination a,
+.pager .pagination span {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  padding: 0;
+  color: #000;
+  font-weight: 300;
+  text-align: center;
+  line-height: 40px;
+  border: solid 1px #b8b8b8;
+  border-radius: 50%;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0;
+  position: relative; }
+.pager .pagination a:hover,
+.pager .pagination span:hover {
+  border-color: #fd7b05;
+  background-color: #fd7b05;
+  color: #fff; }
+.pager .pagination span {
+  border-color: #fd7b05;
+  background-color: #fd7b05;
+  color: #fff; }
+.pager .pagination li {
+  display: inline-block;
+  margin: 0 7px; }
+.pager .pagination li.prev a,
+.pager .pagination li.next a {
+  border-color: #c6f0ff;
+  background-color: #c6f0ff;
+  border-radius: 50%;
+  font-size: 0; }
+.pager .pagination li.prev a:after,
+.pager .pagination li.next a:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-family: FontAwesome;
+  font-size: 18px; }
+.pager .pagination li.prev a:hover,
+.pager .pagination li.next a:hover {
+  color: #000; }
+.pager .pagination li.prev a:after {
+  content: "\f104"; }
+.pager .pagination li.next a:after {
+  content: "\f105"; }
+
+.banner-list > li {
+  margin: 0 auto 20px;
+  max-width: 300px; }
+@media (min-width: 576px) {
+  .banner-list > li {
+    width: 50%;
+    float: left;
+    padding: 0 15px;
+    max-width: 100%; } }
+@media (min-width: 768px) {
+  .banner-list > li {
+    margin-bottom: 50px;
+    width: 100%;
+    padding: 0; } }
+
+.blog-search {
+  position: relative;
+  margin-bottom: 30px; }
+.blog-search input[type="text"] {
+  height: 40px;
+  width: 100%;
+  border: solid 1px #b5b5b5;
+  border-radius: 20px;
+  outline: none;
+  padding: 0 15px;
+  line-height: 40px; }
+.blog-search input[type="text"]::-webkit-input-placeholder {
+  color: #ccc; }
+.blog-search input[type="text"]::-moz-placeholder {
+  color: #ccc; }
+.blog-search input[type="text"]:-ms-input-placeholder {
+  color: #ccc; }
+.blog-search input[type="text"]:-moz-placeholder {
+  color: #ccc; }
+.blog-search input[type="submit"] {
+  position: absolute;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  top: 5px;
+  border: none;
+  background: transparent url("../images/icons/glass.png") center no-repeat;
+  background-size: auto 14px;
+  font-size: 0; }
+
+.blog-recommended .block-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  padding: 10px 15px;
+  background-color: #00ccff;
+  margin-bottom: 30px;
+  text-transform: uppercase; }
+
+.blog-list-recommended > li {
+  margin-bottom: 30px; }
+
+body.page-node-328 .breadcrumb {
+  display: none;
+}

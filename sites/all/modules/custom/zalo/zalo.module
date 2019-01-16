@@ -1,0 +1,95 @@
+<?php
+/**
+ * Zalo module created by giaidieu.com on 05 Oct 2017.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function zalo_permission() {
+  return array(
+    'administer zalo settings' => array(
+      'title' => t('Administer zalo settings'),
+      'description' => t('Perform administration tasks for Zalo.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function zalo_menu() {
+  $items = array();
+
+  $items['zalo/test'] = array(
+    'page callback' => 'zalo_test',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'zalo.inc',
+  );
+
+  $items['zalo/login'] = array(
+    'page callback' => 'zalo_login_process',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'zalo.inc',
+  );
+  
+  $items['zalo/access_token'] = array(
+    'page callback' => 'zalo_access_token',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'zalo.inc',
+  );
+
+  $items['zalo/mobile-login-popup-close/%'] = array(
+    'page callback' => 'zalo_login_from_app_close',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'zalo.inc',
+  );
+
+  $items['admin/config/zalo'] = array(
+    'title' => 'Zalo settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('zalo_settings_form'),
+    'access arguments' => array('administer zalo settings'),
+    'file' => 'zalo.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Helper function to perform a GET/POST request via drupal_http_request().
+ */
+function _zalo_http_request($endpoint, $params, $method) {
+  $url = url($endpoint, array('query' => $params));
+  $request = drupal_http_request($url, array('method' => $method));
+  
+  // Log it if error.
+  if ($request->code != 200) {
+    watchdog('zalo', 'Error message: ' . $request->status_message);
+    return false;
+  }
+  
+  return json_decode($request->data);
+}
+
+/**
+ * Helper function to check and make sure Zalo settings has been done.
+ */
+function _zalo_settings_is_done() {
+  // Get stored settings.
+  $zalo_app_id = variable_get('zalo_app_id', '');
+  $zalo_app_secret = variable_get('zalo_app_secret', '');
+  $zalo_callback_url = variable_get('zalo_callback_url', '');
+
+  if ($zalo_app_id == '' or $zalo_app_secret == '' or $zalo_callback_url == '') {
+    drupal_set_message(t('You have not done setting up Zalo App Id, Secret key and Callback URL.'), 'error');
+    return false;
+  }
+  
+  return true;
+}

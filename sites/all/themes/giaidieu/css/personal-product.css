@@ -1,0 +1,72 @@
+.personal-product {
+  position: relative;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 6px;
+  margin-bottom: 30px;
+}
+
+.personal-product:hover .product-name {
+  color: #ff6700;
+}
+
+.personal-product .product-image {
+  margin-bottom: 10px;
+}
+
+.personal-product .product-image img {
+  width: 100%;
+}
+
+.personal-product .sale-percent {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #ff6700;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+  line-height: 48px;
+}
+
+.personal-product .product-name {
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8px;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.personal-product .product-name a {
+  color: inherit;
+}
+
+.personal-product .description {
+  color: #777;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.personal-product .initial-price {
+  font-size: 16px;
+  color: #999;
+  font-weight: 500;
+  text-decoration: line-through;
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 5px;
+}
+
+.personal-product .sale-price {
+  font-weight: 700;
+  color: #ff6700;
+  font-size: 16px;
+  display: inline-block;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,84 @@
+/* CSS for custom module created by giaidieu */
+
+ul.custom-social-list, .block ul.custom-social-list {
+  margin-left: 0;
+}
+
+ul.custom-social-list {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+          justify-content: center;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 576px) {
+  ul.custom-social-list {
+    margin-bottom: 15px;
+  }
+}
+
+ul.custom-social-list li, #facebookSignin, #googleSignin, #zaloSignin {
+  height: 40px;
+  width: 70px;
+  line-height: 40px;
+  font-size: 25px;
+  margin: 0 15px;
+  display: inline-block;
+  border-radius: 4px;
+  color: #fff;
+  text-align: center;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+ul.custom-social-list li[rel='facebook'], #facebookSignin {
+  background-color: #3b5998;
+}
+
+ul.custom-social-list li[rel='google'], #googleSignin {
+  background-color: #ea4335;
+}
+
+ul.custom-social-list li[rel='zalo'], #zaloSignin {
+  background-color: #0080c8;
+}
+
+/* TinyIMCE */
+table td.textarea-wrapper td.mceStatusbar {
+  width: 100%;
+}
+
+/* Filter admin content page */
+#views-exposed-form-admin-views-node-system-1 .views-widget-filter-type {
+  width: 100%;
+  padding-right: 0;
+}
+#views-exposed-form-admin-views-node-system-1 .views-widget-filter-type .form-type-bef-link {
+  display: inline-block;
+}
+#views-exposed-form-admin-views-node-system-1 .views-widget-filter-type .form-type-bef-link:not(:last-child)::after {
+  content: "|";
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 5px;
+}
+#views-exposed-form-admin-views-node-system-1 .views-widget-filter-type .form-type-bef-link a {
+  display: inline-block;
+  vertical-align: middle;
+}
+#views-exposed-form-admin-views-node-system-1 .views-widget-filter-type .form-type-bef-link a.active {
+  color: inherit;
+  cursor: default;
+  font-weight: bold;
+}
+#views-exposed-form-admin-views-node-system-1 .views-widget-filter-type .form-type-bef-link a.active:hover {
+  text-decoration: none;
+}

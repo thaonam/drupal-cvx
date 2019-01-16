@@ -1,0 +1,142 @@
+<?php
+/**
+ * @file
+ * Installation of custom_messages schema.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function custom_schema() {
+  $schema['custom_friends'] = array(
+    'description' => 'Friend list.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary id of message.',
+        'type' => 'serial',
+        'not null' => true,
+      ),
+      'uid' => array(
+        'description' => 'Drupal user id of current user.',
+        'type' => 'int',
+        'not null' => true,
+      ),
+      'friend_uid' => array(
+        'description' => 'Drupal user id of a friend.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'Status of the friendship: 0=friend, 1=block.',
+        'type' => 'int',
+        'default' => 0,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'Timestamp when this record is created.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'updated' => array(
+        'description' => 'Timestamp when this record is changed.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'uid'    => array('uid'),
+      'friend_uid'  => array('friend_uid'),
+      'status'      => array('status'),
+      'created'   => array('created'),
+      'updated'   => array('updated'),
+    ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'uid' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+      'friend_uid' => array(
+        'table' => 'users',
+        'columns' => array('friend_uid' => 'uid'),
+      ),
+    ),
+  );
+  
+  $schema['custom_messages'] = array(
+    'description' => 'All type of messages used in the custom chat system.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary id of message.',
+        'type' => 'serial',
+        'not null' => true,
+      ),
+      'sender' => array(
+        'description' => 'Drupal user id of sender.',
+        'type' => 'int',
+        'not null' => true,
+      ),
+      'receiver' => array(
+        'description' => 'Drupal user id of receiver.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'channelname' => array(
+        'description' => 'Channel name / type: like, chat, group, etc.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'message' => array(
+        'description' => 'The chat message.',
+        'type' => 'text',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'readstatus' => array(
+        'description' => 'The status of message which is either 1 or 0.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'hide' => array(
+        'description' => 'Whether to ignore this.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'Timestamp when message is created.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'updated' => array(
+        'description' => 'Timestamp when message is changed.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'sender'    => array('sender'),
+      'receiver'  => array('receiver'),
+      'channelname' => array(array('channelname', 10)),
+      'readstatus'  => array('readstatus'),
+      'hide'      => array('hide'),
+      'created'   => array('created'),
+      'updated'   => array('updated'),
+    ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'sender' => array(
+        'table' => 'users',
+        'columns' => array('sender' => 'uid'),
+      ),
+      'receiver' => array(
+        'table' => 'users',
+        'columns' => array('receiver' => 'uid'),
+      ),
+    ),
+  );
+
+  return $schema;
+}

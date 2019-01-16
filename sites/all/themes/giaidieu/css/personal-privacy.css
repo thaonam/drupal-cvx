@@ -1,0 +1,92 @@
+.user-change-pass {
+  padding: 25px 15px 15px;
+}
+
+.user-email {
+  color: #484848;
+  margin-bottom: 15px;
+}
+
+.form-change-pass {
+  max-width: 300px;
+  margin-bottom: 45px;
+}
+
+.form-change-pass input[type="password"],
+.form-change-pass input[type="text"] {
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #d6d6d6;
+  margin-bottom: 20px;
+  width: 100%;
+  outline: none;
+  padding: 0 12px;
+  line-height: 40px;
+}
+
+.form-change-pass input[type="password"]::-webkit-input-placeholder,
+.form-change-pass input[type="text"]::-webkit-input-placeholder {
+  color: #999;
+}
+
+.form-change-pass input[type="password"]::-moz-placeholder,
+.form-change-pass input[type="text"]::-moz-placeholder {
+  color: #999;
+}
+
+.form-change-pass input[type="password"]:-ms-input-placeholder,
+.form-change-pass input[type="text"]:-ms-input-placeholder {
+  color: #999;
+}
+
+.form-change-pass input[type="password"]:-moz-placeholder,
+.form-change-pass input[type="text"]:-moz-placeholder {
+  color: #999;
+}
+
+.form-change-pass input[type="submit"] {
+  border-radius: 4px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 20px;
+  font-size: 18px;
+  text-transform: initial;
+}
+
+.form-change-pass .btn-cancel {
+  height: 40px;
+  font-size: 18px;
+  color: #109dce;
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 1px #d3d3d3;
+  margin-top: 20px;
+  width: 115px;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.form-change-pass .btn-cancel:hover, .form-change-pass .btn-cancel:focus {
+  background-color: #f0f0f0;
+}
+
+@media (min-width: 576px) {
+  .form-change-pass .btn-cancel {
+    float: right;
+    margin-top: 0;
+    display: inline-block;
+  }
+}
+
+.guide-title {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.guide-content {
+  color: 666;
+  margin-bottom: 15px;
+}

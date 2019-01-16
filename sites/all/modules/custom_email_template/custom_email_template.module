@@ -1,0 +1,217 @@
+<?php
+/**
+ * @file
+ * custom_email_template.module
+ */
+
+/**
+ * Implements hook_help().
+ */
+function custom_email_template_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#custom_email_template':
+      $output = '';
+      $output .= '<p>' . t('The Custom Email Template module provides different email templates. You can create Mail Template nodes and select template from admin/config/people/accounts. Also you can select header and footer links.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_node_info().
+ */
+function custom_email_template_node_info() {
+  $items = array(
+    'mail_template' => array(
+      'name' => t('Mail Template'),
+      'base' => 'node_content',
+      'description' => t('Custom email templates.'),
+      'has_title' => TRUE,
+      'title_label' => t('Title'),
+      'help' => 'Custom email templates',
+      'locked' => TRUE,
+    ),
+  );
+  drupal_alter('node_info', $items);
+  return $items;
+}
+
+/**
+ * Implements hook_form_user_admin_settings_alter().
+ */
+function custom_email_template_form_user_admin_settings_alter(&$form, $form_state) {
+  $ids = array('email_admin_created', 'email_pending_approval',
+    'email_no_approval_required', 'email_password_reset', 'email_blocked',
+    'email_activated', 'email_cancel_confirm', 'email_canceled',
+  );
+
+  foreach ($ids as $id) {
+    custom_email_template_generate_form($id, $form);
+  }
+}
+
+/**
+ * Function to generate form.
+ */
+function custom_email_template_generate_form($name, &$form) {
+  $result = db_select('node', 'n')
+        ->fields('n', array('nid', 'title'))
+        ->condition('type', 'mail_template', '=')
+        ->execute();
+  $options[0] = t('default template');
+  foreach ($result as $record) {
+    $options[$record->nid] = $record->title;
+  }
+
+  $form[$name][$name . '_selection'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Template'),
+    '#options' => $options,
+    '#default_value' => variable_get($name . '_selection'),
+  );
+  $form[$name][$name . '_header_links'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Include header links.'),
+    '#default_value' => variable_get($name . '_header_links'),
+  );
+  $form[$name][$name . '_footer_links'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Include footer links.'),
+    '#default_value' => variable_get($name . '_footer_links'),
+  );
+}
+
+/**
+ * Implements hook_mail_alter().
+ */
+function custom_email_template_mail_alter(array &$message) {
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+    'Content-Transfer-Encoding' => '8Bit',
+  );
+  $message['headers'] = $headers;
+
+  $message_id = $message['id'];
+
+  $message_id = drupal_strtolower($message_id);
+  if (($message_id == 'user_register_admin_created') ||
+    ($message_id == 'user_register_pending_approval') ||
+    ($message_id == 'user_register_no_approval_required')
+  ) {
+    $message_id = str_replace('user_register', 'email', $message_id);
+  }
+  elseif (($message_id == 'user_status_blocked') ||
+    ($message_id == 'user_status_activated') ||
+    ($message_id == 'user_status_cancelled')) {
+    $message_id = str_replace('user_status', 'email', $message_id);
+  }
+  elseif (($message_id == 'user_password_reset')) {
+    $message_id = str_replace('user', 'email', $message_id);
+  }
+
+  $tem = variable_get($message_id . '_selection');
+
+  $tem_node = node_load($tem);
+  $message_template = '<table width="100%" border="0" cellpadding="0">';
+
+  $message_template .= '<tr>';
+  $message_template .= '<td>';
+  $message_template .= custom_email_template_generate_header($tem_node, $message_id);
+  $message_template .= '</td>';
+  $message_template .= '</tr>';
+
+  $message_template .= '<tr>';
+  $message_template .= '<td style="border-top:solid 2px #dddddf;border-bottom:solid 2px #dddddf;padding:10px 0px;">';
+  $message_template .= nl2br($message['body'][0]);
+  $message_template .= '</td>';
+  $message_template .= '</tr>';
+
+  $message_template .= '<tr>';
+  $message_template .= '<td>';
+  $message_template .= custom_email_template_generate_footer($tem_node, $message_id);
+  $message_template .= '</td>';
+  $message_template .= '</tr>';
+
+  $message_template .= '</table>';
+
+  $message['body'][0] = $message_template;
+
+}
+
+/**
+ * Function to generate header.
+ */
+function custom_email_template_generate_header(&$tem_node, &$message_id) {
+  global $base_url;
+  $output = '';
+  if (!empty($tem_node->field_header[LANGUAGE_NONE][0]['filename'])) {
+    $tem_image = $tem_node->field_header[LANGUAGE_NONE][0]['filename'];
+    if (!empty($tem_image)) {
+      $tem_image_path = $base_url . '/sites/default/files/mail/' . $tem_image;
+      $output = '<div><img src= "' . $tem_image_path . '" ></div>';
+    }
+  }
+
+  $header_links = variable_get($message_id . '_header_links');
+  if ($header_links) {
+    $size = count($tem_node->field_header_links[LANGUAGE_NONE]);
+    $output .= '<div style="width:100%;text-align:center">';
+    for ($i = 0; $i < $size; $i++) {
+      $url = $tem_node->field_header_links[LANGUAGE_NONE][$i]['url'];
+      $title = $tem_node->field_header_links[LANGUAGE_NONE][$i]['title'];
+
+      if ($i == $size - 1) {
+        $output .= '<div style="display: inline;">' . ' ' . '<a href="' . $url . '" style= "text-decoration: none; color: #016a9e; line-height: 20px; font-size: 12px; font-weight:bold;">' . $title . '</a>' . '</div> ';
+      }
+      else {
+        $output .= '<div style="display: inline;">' . ' ' . '<a href="' . $url . '" style= "text-decoration: none; color: #016a9e; line-height: 20px; font-size: 12px; font-weight: bold;">' . $title . '</a>' . '<span style="color: #016a9e; "> <strong> | </strong> </span></div> ';
+      }
+    }
+    $output .= '</div>';
+  }
+
+  return $output;
+}
+
+/**
+ * Function to generate footer.
+ */
+function custom_email_template_generate_footer(&$tem_node, &$message_id) {
+  $output = '';
+
+  $footer_links = variable_get($message_id . '_footer_links');
+  if ($footer_links) {
+    $size = count($tem_node->field_footer_links[LANGUAGE_NONE]);
+    $output = '<div style="width:100%;text-align:center">';
+    for ($i = 0; $i < $size; $i++) {
+      $url = $tem_node->field_footer_links[LANGUAGE_NONE][$i]['url'];
+      $title = $tem_node->field_footer_links[LANGUAGE_NONE][$i]['title'];
+
+      if ($i == $size - 1) {
+        $output .= '<div style="display: inline;">' . ' ' . '<a href="' . $url . '" style= "text-decoration: underline; color: #016a9e; line-height: 20px; font-size: 11px; font-weight: bold;">' . $title . '</a>' . '</div> ';
+      }
+      else {
+        $output .= '<div style="display: inline;">' . ' ' . '<a href="' . $url . '" style= "text-decoration: underline; color: #016a9e; line-height: 20px; font-size: 11px; font-weight: bold;">' . $title . '</a>' . '<span style="color: #00a1f1; "> <strong> | </strong> </span></div>';
+      }
+    }
+    $output .= '</div>';
+  }
+
+  return $output;
+}
+
+/**
+ * Creates and attaches fields to Drupal user.
+ */
+function custom_email_template_migrate_create_fields(&$sandbox) {
+  module_load_include('inc', 'custom_email_template', 'includes/custom_email_template.field_base');
+  module_load_include('inc', 'custom_email_template', 'includes/custom_email_template.field_instance');
+  module_load_include('inc', 'custom_email_template', 'includes/custom_email_template.field');
+
+  $field_bases = custom_email_template_field_default_field_bases();
+  custom_email_template_field_bases_create_if_required($field_bases);
+
+  $field_instances = custom_email_template_field_default_field_instances();
+  custom_email_template_field_instances_create_if_required($field_instances);
+  return TRUE;
+}

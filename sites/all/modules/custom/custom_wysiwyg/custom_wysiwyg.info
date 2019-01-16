@@ -1,0 +1,10 @@
+name = Giai Điệu WYSIWYG Media
+description = WYSIWYG Media functions - Made by giaidieu.com.
+package = Giai Điệu
+
+version = "7.x-1.0"
+core = "7.x"
+project = "custom_wysiwyg"
+
+dependencies[] = custom:custom
+dependencies[] = wysiwyg:wysiwyg

@@ -1,0 +1,10 @@
+name = Giai Điệu Zalo
+description = Login to Drupal using Zalo chat account - Made by giaidieu.com.
+core = 7.x
+
+configure = admin/config/zalo
+
+package = "Giai Điệu"
+project = "zalo"
+version = "7.x-1.0"
+dependencies[] = custom:custom

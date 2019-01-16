@@ -1,0 +1,233 @@
+.personal-info {
+  background-color: #fff;
+}
+
+.personal-info .info-left {
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .personal-info .info-left {
+    padding-right: 20px;
+    width: 100%;
+    float: left;
+  }
+}
+
+.personal-info .info-right {
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .personal-info .info-right {
+    padding: 15px 15px 0 0;
+    width: 30%;
+    float: left;
+    right: -70%;
+  }
+}
+
+.personal-info-table {
+  font-size: 14px;
+  color: #484848;
+  width: 100%;
+  text-transform: capitalize;
+}
+
+@media (min-width: 992px) {
+  .personal-info-table {
+    font-size: 16px;
+  }
+}
+
+.personal-info-table td {
+  padding: 12px 5px;
+  border-bottom: solid 1px #ebebeb;
+}
+
+@media (min-width: 576px) {
+  .personal-info-table td {
+    padding: 12px 20px;
+  }
+}
+
+.personal-info-table td:first-child {
+  border-right: solid 1px #ebebeb;
+  text-align: right;
+  width: 20%;
+}
+
+.personal-info-table td:last-child {
+  word-break: break-all;
+  width: 80%;
+}
+
+.personal-info-table tr:last-child td {
+  border-bottom: none;
+}
+
+.user-banner {
+  color: #484848;
+  text-align: center;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .user-banner {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    border: solid 1px #e0e0e0;
+  }
+}
+
+.user-banner .user-avatar {
+  width: 30%;
+}
+
+@media (min-width: 768px) {
+  .user-banner .user-avatar {
+    width: 100%;
+  }
+}
+
+.user-banner .user-avatar img {
+  width: 100%;
+}
+
+.user-banner .user-body {
+  width: 70%;
+  padding-left: 10px;
+}
+
+@media (min-width: 768px) {
+  .user-banner .user-body {
+    width: 100%;
+    padding-left: 0;
+  }
+}
+
+.user-banner .user-body .name {
+  font-size: 16px;
+  padding-top: 10px;
+}
+
+@media (min-width: 576px) {
+  .user-banner .user-body .name {
+    font-size: 20px;
+    padding-top: 15px;
+    margin-bottom: 5px;
+  }
+}
+
+.user-banner .user-body .job {
+  font-size: 14px;
+  font-weight: 300;
+  margin-bottom: 5px;
+}
+
+@media (min-width: 576px) {
+  .user-banner .user-body .job {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+}
+
+.social-contact-group {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+@media (min-width: 576px) {
+  .social-contact-group {
+    margin-bottom: 25px;
+  }
+}
+
+.social-contact-group .social-item a {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 7px;
+  background-size: auto 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 5px;
+  display: block;
+
+}
+.social-contact-group .social-item a i{
+  display: none;
+}
+@media (min-width: 576px) {
+  .social-contact-group .social-item a{
+    width: 50px;
+    height: 50px;
+    margin: 0 15px;
+    background-size: auto 20px;
+  }
+}
+
+.social-contact-group .social-item.fb, .social-contact-group .social-item.facebook a{
+  background-color: #00b4fd;
+  background-image: url("../images/icons/fb.png");
+}
+
+.social-contact-group .social-item.viber a{
+  background-color: #8661a6;
+  background-image: url("../images/icons/viber.png");
+}
+
+.social-contact-group .social-item.zalo a{
+  background-color: #00b4fd;
+  background-image: url("../images/icons/zalo.png");
+  background-size: auto 10px;
+}
+
+@media (min-width: 576px) {
+  .social-contact-group .social-item.zalo a{
+    background-size: auto 16px;
+  }
+}
+
+.user-edit-btn .btn, .user-edit-btn .nav-tabs > li > a {
+  width: 200px;
+  text-transform: initial;
+  border-radius: 4px;
+  height: 34px;
+  background-color: #02b9fd;
+  font-weight: 500;
+  color: #fff;
+  padding: 0 32px;
+  border: solid 1px #02b9fd;
+  line-height: 34px;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+.user-edit-btn .nav-tabs > li > a:hover, .user-edit-btn .nav-tabs > li > a.active, .user-edit-btn .nav-tabs > li > a.active:hover{
+  background-color: #ff6000;
+  border-color: #ff6000;
+  color: #fff;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.user-edit-btn .nav-tabs{
+  border: none;
+}

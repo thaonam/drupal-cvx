@@ -1,0 +1,121 @@
+.course-teacher-photo-wrapper {
+    float: left;
+}
+.teacher-social-links a .fa.fa-phone:hover {
+    background: #f60;
+    -webkit-box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.13);
+    color: #fff;
+    box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.13);
+}
+.teacher-social-links .fa.fa-messenger {
+    background-image: url(/sites/all/themes/giaidieu/images/fb-messenger.png);
+    display: block;
+    background-repeat: no-repeat;
+}
+.teacher-social-links .fa.fa-zalo {
+    background-image: url(/sites/all/themes/giaidieu/images/zalo.png);
+    background-repeat: no-repeat;
+}
+.teacher-social-links i{
+    width: 34px;
+    height: 34px;
+    display: block;
+        margin: 0 10px;
+}
+.teacher-social-links .zalo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.teacher-social-links .facebook{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#course-teacher-info i {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 8px;
+    position: relative;
+}
+.teacher-social-links a .fa.fa-phone {
+    height: 38px;
+    display: block;
+    width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #1c95de;
+    color: #fff;
+    font-size: 18px;
+    margin: 0 10px;
+    margin-bottom: 0px;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    text-align: center;
+    line-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+.teacher-social-links {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.course-teacher-photo-wrapper p {
+    margin-bottom: 30px;
+}
+.course-teacher-body {
+/*     display: inline-block;
+    width: 65%;
+    text-align: justify;
+    padding: 0 30px; */
+}
+.course-teacher-photo-wrapper {
+/*     float: left;
+    width: 35%; */
+}
+.course-teacher-name, .course-teacher-title{
+	/* padding: 0 30px; */
+	/* display: inline-block; */
+	/* width: 65%; */
+}
+.course-teacher-name {
+    color: #333;
+    font-size: 30px;
+    font-weight: 500;
+}
+.course-teacher-title {
+    color: #999;
+    font-size: 18px;
+    text-transform: capitalize;
+    /* padding: 20px 30px; */
+    font-weight: 500;
+}
+.node-teacher {
+    padding-bottom: 40px;
+}
+.course-teacher-body p {
+    color: #444;
+    font-size: 15px;
+}
+#course-teacher-info {
+    padding: 15px 0 !important;
+}

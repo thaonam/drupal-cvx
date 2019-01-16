@@ -1,0 +1,38 @@
+.course-img-wrapper {
+  position:  relative;
+}
+
+span.custom-link-node {}
+
+span.custom-link-node {
+  position:  absolute;
+  top: 0;
+  left:  0;
+  right:  0;
+  bottom:  0;
+  display:  flex;
+  justify-content:  center;
+  align-items:  center;
+}
+
+span.course-duration {
+  color: rgb(255, 255, 255);
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  padding: 3px 4px;
+  background-color: rgba(0, 0, 0, 0.39);
+}
+
+.fivestar-widget-static.fivestar-widget-static-vote.fivestar-widget-static-5.clearfix {
+  display:  flex;
+}
+
+.star {
+  padding: 0 2.5px;
+}
+
+.course-rating-wrapper {
+  display:  flex;
+  align-items:  center;
+}

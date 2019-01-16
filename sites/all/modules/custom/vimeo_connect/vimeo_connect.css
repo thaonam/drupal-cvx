@@ -1,0 +1,16 @@
+/* CSS for Vimeo_connect module */
+
+div#edit-vimeo-connect-scopes div.form-type-checkbox {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+div.progress-bar-info {
+  background-color: #5bc0de;
+  color: #fff;
+}
+
+div#progress-container {
+  width: 450px;
+  background-color: #e6e6e6;
+}

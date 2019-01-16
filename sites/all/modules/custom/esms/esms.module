@@ -1,0 +1,156 @@
+<?php /* eSMS module created by giaidieu */
+
+/**
+ * Implements hook_permission().
+ */
+function esms_permission() {
+  return array(
+    'administer esms settings' => array(
+      'title' => t('Administer eSMS settings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function esms_menu() {
+  $items = array();
+
+  $items['admin/esms_test'] = array(
+    'page callback' => 'esms_test',
+    'access arguments' => array('administer esms settings'),
+    'type' => MENU_CALLBACK,
+    'file' => 'esms.admin.inc',
+  );
+
+  $items['admin/config/services/esms'] = array(
+    'title' => 'eSMS.vn Gateway settings',
+    'description' => 'Manage API / Secret keys for eSMS Gateway.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('esms_settings_form'),
+    'access arguments' => array('administer esms settings'),
+    'file' => 'esms.admin.inc',
+  );
+
+  $items['admin/config/services/esms_messages_token'] = array(
+    'title' => 'eSMS.vn Messages settings',
+    'description' => 'Define message templates used for the SMS sending.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('esms_messages_token_form'),
+    'access arguments' => array('administer esms settings'),
+    'file' => 'esms.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function esms_ctools_plugin_api($owner, $api) {
+  if ($owner == 'services' && $api == 'services') {
+    return array(
+      'version' => 3,
+      'file' => 'esms.services.inc'
+    );
+  }
+}
+
+/**
+ * Function to get balance.
+ */
+function esms_get_balance() {
+  return esms_send('GetBalance');
+}
+
+/**
+ * Function to send a sms.
+ */
+function esms_send_message($message, $number, $sms_type = 2) {
+  // Workaround to fix the ' issue.
+  $number = preg_replace('/\'/', '', $number);
+  
+  // For debug purpose.
+  watchdog('esms', 'Sent SMS to ' . $number . ' with message: ' . $message);
+  //return true;
+  
+  $params = array(
+    'Content=' . urlencode($message),
+    'Phone=' . $number,
+    'SmsType=' . $sms_type,
+  );
+  
+  // Send under a brandname if defined.
+  if ($sms_type == 1 or $sms_type == 2) {
+    $brandname = variable_get('esms_brandname', '');
+    if ($brandname != '') {
+      $params[] = 'Brandname=' . $brandname;
+    }
+    else{
+      watchdog('esms', 'Your brand name "' . $brandname . '" is undefined');
+    }
+  }
+
+  return esms_send('SendMultipleMessage_V4_get', $params);
+}
+
+/**
+ * Function to send data to eSMS server.
+ */
+function esms_send($api_name, $params = array()) {
+  // Make sure API and Secret key is set.
+  $esms_api_key = variable_get('esms_api_key', '');
+  $esms_secret_key = variable_get('esms_secret_key', '');
+  
+  if ($esms_api_key == '' or $esms_secret_key == '') {
+    watchdog('esms', t('Have not done setting up the eSMS keys.'));
+    return false;
+  }
+  
+  // Construct the data.
+  $url = 'http://rest.esms.vn/MainService.svc/json/' . $api_name;
+  $params[] = 'ApiKey=' . $esms_api_key;
+  $params[] = 'SecretKey=' . $esms_secret_key;
+   
+  $data = $url . '?' . join('&', $params);
+	$curl = curl_init($data); 
+	curl_setopt($curl, CURLOPT_FAILONERROR, true); 
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); 
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
+ 
+	$exec = curl_exec($curl);
+  
+  // Return result. 
+	$result = json_decode($exec, true);
+  
+  if($result['CodeResult'] == 100) {
+    watchdog('esms', 'eSMS message sent successfully to Mobile No. - SMSID: ' . $result['SMSID']);
+    return $result;
+  }
+  else if ($result['CodeResponse'] == 100) {
+    // Return balance.
+    return $result;
+  }
+  else {
+    watchdog('esms', $result['ErrorMessage']);
+    return false;
+  }
+}
+
+/**
+ * Helper function to return SMS type.
+ */
+function _esms_sms_type() {
+  return array(
+    '1' => 'Brandname quảng cáo',
+    '2' => 'Brandname chăm sóc khách hàng',
+    '3' => 'Đầu số ngẫu nhiên',
+    '4' => 'Đầu số cố định Notify',
+    '6' => 'Đầu số cố định Verify',
+    '7' => 'OTP - Tin nhắn tốc độ cao, đầu số ngẫu nhiên',
+    '8' => 'Tin nhắn đầu số cố định',
+    '10' => 'Tin nhắn đầu số cố định 10 số, CSKH - Đăng ký trước.',
+    '13' => 'Tin nhắn 2 chiều',
+  );
+}

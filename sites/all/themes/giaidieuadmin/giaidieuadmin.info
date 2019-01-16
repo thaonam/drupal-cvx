@@ -1,0 +1,18 @@
+name = Giai Điệu Admin
+description = Admin WP-styled theme for Giai Điệu projects https://giaidieu.com.
+version = VERSION
+core = 7.x
+stylesheets[screen][] = reset.css
+stylesheets[screen][] = style.css
+
+regions[content] = Content
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[left] = Left sidebar
+;regions_hidden[] = sidebar_first
+
+scripts[] = script.js
+
+; Information added by Drupal.org packaging script on 2017-02-01
+project = "giaidieuadmin"
+package = Giai Điệu

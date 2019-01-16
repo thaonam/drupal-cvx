@@ -1,0 +1,496 @@
+<?php 
+// $Id: uc_nganluong.module by Thiết kế web Giai Điệu $
+
+/**
+ * Implements hook_menu().
+ */
+function uc_nganluong_menu() {
+  $items = array();
+
+  $items['cart/nganluong/complete/%uc_order'] = array(
+    'title' => t('Order complete'),
+    'page callback' => 'uc_nganluong_complete',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_nganluong.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_uc_payment_method().
+ */
+function uc_nganluong_uc_payment_method() {
+  $methods['nganluong_bankcard'] = array(
+    'name' => t('NganLuong - Online payment by domestic bank card'),
+    'title' => t('Online payment by domestic bank card'),
+    'desc' => t('You need to register for Internet Banking or online payment service at the bank before proceeding.'),
+    'callback' => 'uc_payment_method_nganluong_bankcard',
+    'redirect' => 'uc_nganluong_bankcard_form',
+    'weight' => 3,
+    'checkout' => FALSE,
+    'no_gateway' => TRUE,
+  );
+
+  $methods['nganluong_ibanking'] = array(
+    'name' => t('NganLuong - Online payment by iBanking'),
+    'title' => t('Online payment by iBanking'),
+    'desc' => t('You need to register for Internet Banking or online payment service at the bank before proceeding.'),
+    'callback' => 'uc_payment_method_nganluong_ibanking',
+    'redirect' => 'uc_nganluong_ibanking_form',
+    'weight' => 4,
+    'checkout' => FALSE,
+    'no_gateway' => TRUE,
+  );
+
+  $methods['nganluong_atm'] = array(
+    'name' => t('NganLuong - Payment by offline ATM'),
+    'title' => t('Payment by offline ATM'),
+    'desc' => t('Payment via the ATM system. You need to go to a nearby ATM to make the money transfer.'),
+    'callback' => 'uc_payment_method_nganluong_atm',
+    'redirect' => 'uc_nganluong_atm_form',
+    'weight' => 5,
+    'checkout' => FALSE,
+    'no_gateway' => TRUE,
+  );
+
+  $methods['nganluong_debitcard'] = array(
+    'name' => t('NganLuong - Online payment by Visa/MasterCard'),
+    'title' => t('Online payment by Visa/MasterCard'),
+    'desc' => t('Support for Visa / MasterCard.'),
+    'callback' => 'uc_payment_method_nganluong_debitcard',
+    'redirect' => 'uc_nganluong_debitcard_form',
+    'weight' => 6,
+    'checkout' => FALSE,
+    'no_gateway' => TRUE,
+  );
+
+  return $methods;
+}
+
+/**
+ * Adds NganLuong settings to the payment method BankCard.
+ *
+ * @see uc_nganluong_uc_payment_method()
+ */
+function uc_payment_method_nganluong_bankcard($op, &$order, $form = NULL, &$form_state = NULL) {
+  switch ($op) {
+    case 'cart-details':
+      $build['bankcode'] = array(
+        '#title' => t('Your Bank name'),
+        '#type' => 'radios',
+        '#options' => _uc_nganluong_bankcard_list(),
+        '#required' => true,
+        '#description' => t('You need to register for Internet Banking or online payment service at the bank before proceeding.'),
+      );
+
+      $build['#attached']['css'] = array(
+        drupal_get_path('module', 'uc_nganluong') . '/uc_nganluong.css',
+      );
+
+      return $build;
+
+    case 'cart-review':
+      break;
+
+    case 'order-view':
+      return array('#markup' => '');
+
+    case 'customer-view':
+      return array('#markup' => '');
+
+    case 'settings':
+      _uc_nganluong_settings_form($form);      
+      return $form;
+  }
+}
+
+/**
+ * Adds NganLuong settings to the payment method iBanking.
+ *
+ * @see uc_nganluong_uc_payment_method()
+ */
+function uc_payment_method_nganluong_ibanking($op, &$order, $form = NULL, &$form_state = NULL) {
+  switch ($op) {
+    case 'cart-details':
+      $build['bankcode'] = array(
+        '#title' => t('Your Bank name'),
+        '#type' => 'radios',
+        '#options' => _uc_nganluong_ibanking_list(),
+        '#required' => true,
+        '#description' => t('You need to register for Internet Banking or online payment service at the bank before proceeding.'),
+      );
+
+      $build['#attached']['css'] = array(
+        drupal_get_path('module', 'uc_nganluong') . '/uc_nganluong.css',
+      );
+
+      return $build;
+
+    case 'cart-review':
+      /*
+      $review[] = array(
+        'title' => t('To'),
+        'data' => theme('uc_bank_transfer_bank_details', array('oid' => $order->order_id)),
+      );
+      return $review;
+      */
+
+      break;
+
+    case 'order-view':
+      return array('#markup' => '');
+
+    case 'customer-view':
+      return array('#markup' => '');
+
+    case 'settings':
+      _uc_nganluong_settings_form($form);
+      return $form;
+  }
+}
+
+/**
+ * Adds NganLuong settings to the payment method ATM.
+ *
+ * @see uc_nganluong_uc_payment_method()
+ */
+function uc_payment_method_nganluong_atm($op, &$order, $form = NULL, &$form_state = NULL) {
+  switch ($op) {
+    case 'cart-details':
+      $build['bankcode'] = array(
+        '#title' => t('Your Bank name'),
+        '#type' => 'radios',
+        '#options' => _uc_nganluong_atm_list(),
+        '#required' => true,
+      );
+
+      $build['#attached']['css'] = array(
+        drupal_get_path('module', 'uc_nganluong') . '/uc_nganluong.css',
+      );
+
+      return $build;
+
+    case 'cart-review':
+      break;
+
+    case 'order-view':
+      return array('#markup' => '');
+
+    case 'customer-view':
+      return array('#markup' => '');
+
+    case 'settings':
+      _uc_nganluong_settings_form($form);
+      return $form;
+  }
+}
+
+/**
+ * Adds NganLuong settings to the payment method DebitCard.
+ *
+ * @see uc_nganluong_uc_payment_method()
+ */
+function uc_payment_method_nganluong_debitcard($op, &$order, $form = NULL, &$form_state = NULL) {
+  switch ($op) {
+    case 'cart-details':
+      $build['bankcode'] = array(
+        '#title' => t('Your Card name'),
+        '#type' => 'radios',
+        '#options' => _uc_nganluong_card_list(),
+        '#required' => true,
+      );
+
+      $build['#attached']['css'] = array(
+        drupal_get_path('module', 'uc_nganluong') . '/uc_nganluong.css',
+      );
+
+      return $build;
+
+    case 'cart-review':
+      break;
+
+    case 'order-view':
+      return array('#markup' => '');
+
+    case 'customer-view':
+      return array('#markup' => '');
+
+    case 'settings':
+      _uc_nganluong_settings_form($form);
+      return $form;
+  }
+}
+
+/**
+ * NganLuong - Bankcard form.
+ */
+function uc_nganluong_bankcard_form($form, &$form_state, $order) {
+  // Get checkout instance.
+  $nganluong_instance = _uc_nganluong_gateway_instance();
+  if (!$nganluong_instance) {return false;}
+  
+  // Get params.
+  $bank_code = $form_state['input']['panes']['payment']['details']['bankcode'];
+  $params = _uc_nganluong_gateway_params($form_state, $order, 'ATM_ONLINE');
+ 
+	$result = $nganluong_instance->BankCheckout($params['order_code'], $params['total_amount'], $bank_code, $params['payment_type'], $params['order_description'], $params['tax_amount'], $params['fee_shipping'], $params['discount_amount'], $params['return_url'], $params['cancel_url'], $params['buyer_fullname'], $params['buyer_email'], $params['buyer_mobile'], $params['buyer_address'], $params['array_items']);
+	
+  if ($result->error_code =='00') {
+    // &lang=en -> English.
+		drupal_goto($result->checkout_url, array('external' => true, 'absolute' => true));
+	}
+  else{
+	  drupal_set_message($result->error_message, 'error');
+    watchdog('uc_nganluong', $result->error_message);
+	}
+
+  exit;
+}
+
+/**
+ * NganLuong - iBanking form.
+ */
+function uc_nganluong_ibanking_form($form, &$form_state, $order) {
+  // Get checkout instance.
+  $nganluong_instance = _uc_nganluong_gateway_instance();
+  if (!$nganluong_instance) {return false;}
+  
+  // Get params.
+  $bank_code = $form_state['input']['panes']['payment']['details']['bankcode'];
+  $params = _uc_nganluong_gateway_params($form_state, $order, 'IB_ONLINE');
+
+	$result = $nganluong_instance->IBCheckout($params['order_code'], $params['total_amount'], $bank_code, $params['payment_type'], $params['order_description'], $params['tax_amount'], $params['fee_shipping'], $params['discount_amount'], $params['return_url'], $params['cancel_url'], $params['buyer_fullname'], $params['buyer_email'], $params['buyer_mobile'], $params['buyer_address'], $params['array_items']);
+
+  if ($result->error_code =='00') {
+    // &lang=en -> English.
+		drupal_goto($result->checkout_url, array('external' => true, 'absolute' => true));
+	}
+  else{
+	  drupal_set_message($result->error_message, 'error');
+    watchdog('uc_nganluong', $result->error_message);
+	}
+
+  exit;
+}
+
+/**
+ * NganLuong - ATM form.
+ */
+function uc_nganluong_atm_form($form, &$form_state, $order) {
+  // Get checkout instance.
+  $nganluong_instance = _uc_nganluong_gateway_instance();
+  if (!$nganluong_instance) {return false;}
+
+  // Get params.
+  $bank_code = $form_state['input']['panes']['payment']['details']['bankcode'];
+  $params = _uc_nganluong_gateway_params($form_state, $order, 'ATM_OFFLINE');
+
+	$result = $nganluong_instance->BankOfflineCheckout($params['order_code'], $params['total_amount'], $bank_code, $params['payment_type'], $params['order_description'], $params['tax_amount'], $params['fee_shipping'], $params['discount_amount'], $params['return_url'], $params['cancel_url'], $params['buyer_fullname'], $params['buyer_email'], $params['buyer_mobile'], $params['buyer_address'], $params['array_items']);
+
+  if ($result->error_code =='00') {
+    // &lang=en -> English.
+		drupal_goto($result->checkout_url, array('external' => true, 'absolute' => true));
+	}
+  else{
+	  drupal_set_message($result->error_message, 'error');
+    watchdog('uc_nganluong', $result->error_message);
+	}
+
+  exit;
+}
+
+/**
+ * NganLuong - DebitCard form.
+ */
+function uc_nganluong_debitcard_form($form, &$form_state, $order) {
+  // Get checkout instance.
+  $nganluong_instance = _uc_nganluong_gateway_instance();
+  if (!$nganluong_instance) {return false;}
+
+  // Get params.
+  $bank_code = $form_state['input']['panes']['payment']['details']['bankcode'];
+  $params = _uc_nganluong_gateway_params($form_state, $order, 'VISA');
+
+	$result = $nganluong_instance->VisaCheckout($params['order_code'], $params['total_amount'], $params['payment_type'], $params['order_description'], $params['tax_amount'], $params['fee_shipping'], $params['discount_amount'], $params['return_url'], $params['cancel_url'], $params['buyer_fullname'], $params['buyer_email'], $params['buyer_mobile'], $params['buyer_address'], $params['array_items'], $bank_code);
+  if ($result->error_code =='00') {
+    // &lang=en -> English.
+		drupal_goto($result->checkout_url, array('external' => true, 'absolute' => true));
+	}
+  else{
+	  drupal_set_message($result->error_message, 'error');
+    watchdog('uc_nganluong', $result->error_message);
+	}
+  exit;
+}
+
+/**
+ * Helper function to get the gateway instance.
+ */
+function _uc_nganluong_gateway_instance() {
+  // Import library.
+	include(drupal_get_path('module', 'uc_nganluong') . '/include/NL_Checkoutv3.php');	
+
+  // Setup NganLuong config info.
+  $url_api = variable_get('uc_nganluong_gateway_url', 'https://sandbox.nganluong.vn:8088/nl30/checkout.api.nganluong.post.php');
+  $receiver = variable_get('uc_nganluong_receiver', '');
+  $merchant_id = variable_get('uc_nganluong_merchant_id', '');
+  $merchant_pass = variable_get('uc_nganluong_card_merchant_pass', '');
+
+  if ($receiver == '' or $merchant_id == '' or $merchant_pass == '') {
+    drupal_set_message(t('Merchant info is missing. Please contact the website admin to fix the problem.'), 'error');
+    return false;
+  }  
+  
+	$nganluong_checkout = new NL_CheckOutV3($merchant_id, $merchant_pass, $receiver, $url_api);
+  return $nganluong_checkout;
+}
+
+/**
+ * Helper function to build Settings form.
+ */
+function _uc_nganluong_settings_form(&$form) {
+  $form['uc_nganluong_gateway_url'] = array(
+    '#type' => 'select',
+    '#title' => t('Payment gateway mode'),
+    '#options' => array(
+      'https://sandbox.nganluong.vn:8088/nl30/checkout.api.nganluong.post.php' => t('Sandbox'),
+      'https://www.nganluong.vn/checkout.api.nganluong.post.php' => t('Live'),
+    ),
+    '#default_value' => variable_get('uc_nganluong_gateway_url', 'https://sandbox.nganluong.vn:8088/nl30/checkout.api.nganluong.post.php'),
+    '#required' => true,
+  );
+
+  $form['uc_nganluong_receiver'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Your account\'s email at NganLuong.vn'),
+    '#default_value' => variable_get('uc_nganluong_receiver', ''),
+    '#description' => t('Please register with NganLuong.vn if you haven\'t one: ') . 'https://www.nganluong.vn/nganluong/userRegister/index.html',
+    '#required' => true,
+  );
+
+  $form['uc_nganluong_merchant_id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Merchant ID'),
+    '#default_value' => variable_get('uc_nganluong_merchant_id', ''),
+    '#description' => t('Please register with NganLuong.vn if you haven\'t one: ') . 'https://www.nganluong.vn/nganluong/merchant.html',
+    '#required' => true,
+  );
+
+  $form['uc_nganluong_card_merchant_pass'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Merchant secret key'),
+    '#default_value' => variable_get('uc_nganluong_card_merchant_pass', ''),
+    '#required' => true,
+  );
+}
+
+/**
+ * Helper function to get the gateway params.
+ */
+function _uc_nganluong_gateway_params($form_state, $order, $payment_method) {
+  // Buyer address
+  $buyer_address = array();
+  $buyer_address[] = !empty($form_state['input']['panes']['billing']['billing_street1']) ? $form_state['input']['panes']['billing']['billing_street1'] : '';
+  $buyer_address[] = !empty($form_state['input']['panes']['billing']['billing_city']) ? $form_state['input']['panes']['billing']['billing_city'] : '';
+  // Buyer email
+  $buyer_email = isset($form_state['input']['panes']['customer']['primary_email']) ? $form_state['input']['panes']['customer']['primary_email'] : '';
+  // Buyer full name
+  $buyer_fullname = !empty($form_state['input']['panes']['billing']['billing_first_name']) ? $form_state['input']['panes']['billing']['billing_first_name'] : $buyer_email;
+  // Buyer mobile
+  $buyer_mobile = !empty($form_state['input']['panes']['billing']['billing_phone']) ? $form_state['input']['panes']['billing']['billing_phone'] : 'N/A';
+  // Setup params.
+  return array(
+	  'total_amount' => $order->order_total,
+    'array_items' => array(),
+    'payment_method' => $payment_method,
+	  'order_code' => $order->order_id,
+	  'payment_type' => '',
+	  'discount_amount' => 0,
+	  'order_description' => '',
+	  'tax_amount' => 0,
+	  'fee_shipping' => 0,
+	  'return_url' => url('cart/nganluong/complete/' . $order->order_id, array('absolute' => true)),
+	  'cancel_url' => url('cart/checkout', array('absolute' => true)),
+    'buyer_fullname' => $buyer_fullname,
+	  'buyer_email' => $buyer_email,
+	  'buyer_mobile' => $buyer_mobile,
+    'buyer_address' => !empty(array_values($buyer_address)) ? implode(', ', $buyer_address) : '',
+  );
+}
+
+/**
+ * Helper function to get the card list.
+ */
+function _uc_nganluong_card_list() {
+  return array(
+    'VISA' => '<i class="VISA" title="Thẻ Visa Card"></i>',
+    'MASTER' => '<i class="MASTER" title="Thẻ MasterCard"></i>',
+  );
+}
+
+/**
+ * Helper function to get list of Bank name, icon, and bankcode for Bankcard.
+ */
+function _uc_nganluong_atm_list() {
+  return array(
+    'BIDV' => '<i class="BIDV" title="Ngân hàng TMCP Đầu tư &amp; Phát triển Việt Nam"></i>',
+    'VCB' => '<i class="VCB" title="Ngân hàng TMCP Ngoại Thương Việt Nam"></i>',
+    'DAB' => '<i class="DAB" title="Ngân hàng Đông Á"></i>',
+    'TCB' => '<i class="TCB" title="Ngân hàng Kỹ Thương"></i>',
+    'MB' => '<i class="MB" title="Ngân hàng Quân Đội"></i>',
+    'ICB' => '<i class="ICB" title="Ngân hàng Công Thương Việt Nam"></i>',
+    'ACB' => '<i class="ACB" title="Ngân hàng Á Châu"></i>',
+    'MSB' => '<i class="MSB" title="Ngân hàng Hàng Hải"></i>',
+    'SCB' => '<i class="SCB" title="Ngân hàng Sài Gòn Thương tín"></i>',
+    'PGB' => '<i class="PGB" title="Ngân hàng Xăng dầu Petrolimex"></i>',
+    'AGB' => '<i class="AGB" title="Ngân hàng Nông nghiệp &amp; Phát triển nông thôn"></i>',
+    'SHB' => '<i class="SHB" title="Ngân hàng TMCP Sài Gòn - Hà Nội (SHB)"></i>',
+  );
+}
+
+/**
+ * Helper function to get list of ibanking.
+ */
+function _uc_nganluong_ibanking_list() {
+  return array(
+    'BIDV' => '<i class="BIDV" title="Ngân hàng TMCP Đầu tư &amp; Phát triển Việt Nam"></i>',
+    'VCB' => '<i class="VCB" title="Ngân hàng TMCP Ngoại Thương Việt Nam"></i>',
+    'DAB' => '<i class="DAB" title="Ngân hàng Đông Á"></i>',
+    'TCB' => '<i class="TCB" title="Ngân hàng Kỹ Thương"></i>',
+  );
+}
+
+/**
+ * Helper function to get list of Bank name, icon, and bankcode for Bankcard.
+ */
+function _uc_nganluong_bankcard_list() {
+  return array(
+    'BIDV' => '<i class="BIDV" title="Ngân hàng TMCP Đầu tư &amp; Phát triển Việt Nam"></i>',
+    'VCB' => '<i class="VCB" title="Ngân hàng TMCP Ngoại Thương Việt Nam"></i>',
+    'DAB' => '<i class="DAB" title="Ngân hàng Đông Á"></i>',
+    'TCB' => '<i class="TCB" title="Ngân hàng Kỹ Thương"></i>',
+    'MB' => '<i class="MB" title="Ngân hàng Quân Đội"></i>',
+    'VIB' => '<i class="VIB" title="Ngân hàng Quốc tế"></i>',
+    'ICB' => '<i class="ICB" title="Ngân hàng Công Thương Việt Nam"></i>',
+    'EXB' => '<i class="EXB" title="Ngân hàng Xuất Nhập Khẩu"></i>',
+    'ACB' => '<i class="ACB" title="Ngân hàng Á Châu"></i>',
+    'HDB' => '<i class="HDB" title="Ngân hàng Phát triển Nhà TPHCM"></i>',
+    'MSB' => '<i class="MSB" title="Ngân hàng Hàng Hải"></i>',
+    'NVB' => '<i class="NVB" title="Ngân hàng Nam Việt"></i>',
+    'VAB' => '<i class="VAB" title="Ngân hàng Việt Á"></i>',
+    'VPB' => '<i class="VPB" title="Ngân Hàng Việt Nam Thịnh Vượng"></i>',
+    'SCB' => '<i class="SCB" title="Ngân hàng Sài Gòn Thương tín"></i>',
+    'PGB' => '<i class="PGB" title="Ngân hàng Xăng dầu Petrolimex"></i>',
+    'GPB' => '<i class="GPB" title="Ngân hàng TMCP Dầu khí Toàn Cầu"></i>',
+    'AGB' => '<i class="AGB" title="Ngân hàng Nông nghiệp &amp; Phát triển nông thôn"></i>',
+    'SGB' => '<i class="SGB" title="Ngân hàng Sài Gòn Công Thương"></i>',
+    'BAB' => '<i class="BAB" title="Ngân hàng Bắc Á"></i>',
+    'TPB' => '<i class="TPB" title="Tiền phong bank"></i>',
+    'NAB' => '<i class="NAB" title="Ngân hàng Nam Á"></i>',
+    'SHB' => '<i class="SHB" title="Ngân hàng TMCP Sài Gòn - Hà Nội (SHB)"></i>',
+    'OJB' => '<i class="OJB" title="Ngân hàng TMCP Đại Dương (OceanBank)"></i>',
+  );
+}

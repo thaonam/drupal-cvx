@@ -1,0 +1,98 @@
+<?php /* Mobilevn module created by giaidieu */
+
+/**
+ * Implements hook_permission().
+ */
+function mobilevn_permission() {
+  return array(
+    'administer mobilevn settings' => array(
+      'title' => t('Administer Mobile VN settings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function mobilevn_menu() {
+  $items = array();
+
+  $items['admin/mobilevn_test'] = array(
+    'page callback' => 'mobilevn_test',
+    'access arguments' => array('administer mobilevn settings'),
+    'type' => MENU_CALLBACK,
+    'file' => 'mobilevn.admin.inc',
+  );
+
+  $items['admin/config/services/mobilevn'] = array(
+    'title' => 'Mobile VN settings',
+    'description' => 'Define VN mobile numbers format.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mobilevn_settings_form'),
+    'access arguments' => array('administer mobilevn settings'),
+    'file' => 'mobilevn.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Function to take input as a number then return its operator name.
+ */
+function mobilevn_is_valid_mobile_number($number) {
+  // Get the number length; prefix as 4 if 11 and 3 if 10.
+  $length = strlen($number);
+  $prefix = $length == 11 ? substr($number, 0, 4) : substr($number, 0, 3);
+  
+  $mobilevn = variable_get('mobilevn', array());
+  if (empty($mobilevn)) {return false;}
+  
+  foreach ($mobilevn as $value) {
+    if ($value['prefix'] == $prefix and $value['length'] == $length) {
+      $operators_list = _mobilevn_operators_list();
+      $fullname = $operators_list[$value['name']];
+      return array($value['name'] => $fullname);
+    }
+  }
+}
+
+
+/**
+ * Function to take input as an operator name then return its data as an array of prefix and length.
+ */
+function mobilevn_numbers_by_operator_name($name) {
+  $name = strtolower($name);
+  $operators_list = _mobilevn_operators_list();
+  $number_list = array();
+
+  $mobilevn = variable_get('mobilevn', array());
+  if (empty($mobilevn)) {return false;}
+
+  foreach ($mobilevn as $value) {
+    if ($value['name'] == $name) {
+      $number_list[] = array(
+        'name' => $value['name'],
+        'fullname' => $operators_list[$value['name']],
+        'prefix' => $value['prefix'],
+        'length' => $value['length'],
+      );
+    }
+  }
+  
+  return $number_list;
+}
+
+/**
+ * Return an array of operators in Vietnam.
+ */
+function _mobilevn_operators_list() {
+  return array(
+    'mobifone' => 'MobiFone',
+    'vinaphone' => 'Vinaphone',
+    'viettel' => 'Viettel',
+    'vietnamobile' => 'Vietnamobile (HT Mobile)',
+    'gmobile' => 'Gmobile (Beeline)',
+    'vsat' => 'VSAT',
+    'indochinatelecom' => 'Indochina Telecom',
+  );
+}

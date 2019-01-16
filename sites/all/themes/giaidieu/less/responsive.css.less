@@ -1,0 +1,287 @@
+.menu-bar-wrapper {
+  padding-left: 7px;
+  display: inline-block;
+  float: left;
+  width: auto;
+
+  @media (min-width: 1200px) {
+    display: none;
+  }
+}
+.region-navigation {
+  #block-system-main-menu {
+    position: absolute;
+    top: 110%;
+    background-color: #8dc63f;
+    @media (max-width: 1199px) {
+
+      width: 100%;
+    }
+    left: 0;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+
+    &.active {
+      top: 100%;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media (min-width: 1200px) {
+      position: initial;
+      background-color: transparent;
+      /* width: 75%; */
+      opacity: 1;
+      visibility: visible;
+      padding: 0 15px;
+    }
+  }
+}
+
+.popups-close {
+  z-index: 10;
+}
+
+.search-icon {
+  right: 0;
+  z-index: 5;
+
+  @media (min-width: 576px) {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.banner-fluid {
+  img {
+    width: 100%;
+  }
+}
+
+.list-category {
+  margin-bottom: 40px;
+}
+
+.service-slideshow .owl-item,
+.carousel-related .owl-item,
+.slide-pager .owl-item {
+  padding: 0 7.5px;
+  @media (max-width: 425px) {
+    padding: 0 15px;
+  }
+}
+
+#block-views-node-functions-block-21 .product img {
+  border: none !important;
+}
+
+.blog-list-recommended li {
+  @media (min-width: 576px) {
+    width: 50%;
+    float: left;
+  }
+
+  @media (min-width: 768px) {
+    width: 100%;
+    float: none;
+  }
+}
+
+.th_cart-block {
+  .th_cart-item {
+    height: 40px;
+    top: 7px;
+
+    @media (min-width: 768px) {
+      top: 0;
+    }
+  }
+
+  .cart-label {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: inline-block;
+    }
+  }
+}
+
+.feature-wrapper .feature .title {
+  font-size: 20px;
+
+  @media (min-width: 576px) {
+    font-size: 25px;
+  }
+}
+
+.ch_service {
+  .image img {
+    margin: 0 auto;
+    width: auto !important;
+  }
+
+  .service-detail .action {
+    margin-top: -5px;
+  }
+}
+
+.important-infor {
+  margin-top: 0;
+}
+
+.view-display-id-block_3 .view-content,
+.view-display-id-block_1 .view-content {
+  display: flex;
+  flex-wrap: wrap;
+
+  .views-row {
+    @media (min-width: 400px) and (max-width: 767px) {
+      width: 50%;
+    }
+  }
+}
+
+.block-3reasons .block-content {
+  > p {
+    &:first-child {
+      @media (max-width: 500px) {
+        width: 100%;
+        margin: 0 auto 15px;
+        float: none;
+        max-width: 300px;
+      }
+    }
+
+    &:nth-child(2) {
+      @media (max-width: 500px) {
+        float: none;
+        text-align: center;
+        width: 100%;
+      }
+    }
+  }
+
+  > h2 {
+    @media (max-width: 500px) {
+      float: none;
+      text-align: center;
+      width: 100%;
+
+      &:after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  }
+
+  > ul {
+    @media (max-width: 500px) {
+      float: none;
+      width: 100%;
+
+      li:not(:last-child) {
+        margin-bottom: 30px;
+      }
+    }
+  }
+}
+
+.footer-top .region-footer {
+  display: flex;
+  flex-wrap: wrap;
+
+  .th_address {
+    max-width: 400px;
+
+    @media (max-width: 576px) {
+      .add-body {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .footer-department-list,
+  .footer-help-list {
+    @media (min-width: 400px) and (max-width: 767px) {
+      width: 50%;
+    }
+  }
+}
+
+.view-display-id-block_12 {
+  .th_customer-content {
+    @media (max-width: 576px) {
+      font-size: 16px;
+    }
+  }
+
+  .author-img {
+    @media (max-width: 576px) {
+      width: 60px;
+      height: 60px;
+    }
+  }
+}
+
+#block-block-35 .product-advert img {
+  width: 100%;
+}
+
+.important-infor .important-text {
+  text-align: center;
+}
+
+.slideshow-2-rows {
+  .owl-nav {
+    .owl-next,
+    .owl-prev {
+      z-index: 5;
+    }
+
+    @media (max-width: 992px) {
+      .owl-prev {
+        left: 0;
+      }
+
+      .owl-next {
+        right: 0;
+      }
+    }
+  }
+}
+
+.dh-block-doctors {
+  .owl-nav {
+    @media (max-width: 992px) {
+      .owl-prev {
+        left: 0;
+      }
+
+      .owl-next {
+        right: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 425px) {
+  .service-info .sale-price {
+    margin-bottom: 10px;
+    margin-right: 15px;
+  }
+
+  .dh-sale-product {
+    margin-bottom: 10px;
+  }
+
+  #custom-product-addon-wrapper .items-list > li > a {
+
+  }
+}

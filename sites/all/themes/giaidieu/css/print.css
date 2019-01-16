@@ -1,0 +1,25 @@
+div.print-logo {
+  padding-top: 30px;
+}
+
+div.print-logo img {
+  margin: 0 auto 30px;
+}
+
+.print-site_name,
+.print-breadcrumb {
+  display: none;
+}
+
+.print-content {
+  padding: 0 15px;
+}
+
+.print-content .dh-post-share,
+.print-content .article-comments {
+  display: none;
+}
+
+.print-links {
+  display: none;
+}

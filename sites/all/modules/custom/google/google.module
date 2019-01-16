@@ -1,0 +1,68 @@
+<?php
+/**
+ * Google module created by giaidieu.com on 05 Oct 2017.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function google_permission() {
+  return array(
+    'administer google settings' => array(
+      'title' => t('Administer google settings'),
+      'description' => t('Perform administration tasks for Google.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function google_menu() {
+  $items = array();
+
+  $items['admin/config/google'] = array(
+    'title' => 'Google settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('google_settings_form'),
+    'access arguments' => array('administer google settings'),
+    'file' => 'google.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Function to enable Google login for the caller site.
+ */
+function google_enable_login_button() {
+  $google_app_id = variable_get('google_app_id', '');
+  if ($google_app_id != '') {
+    drupal_add_js(array('google_app_id' => $google_app_id), 'setting');
+    $data = array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'google-signin-client_id',
+        'content' => $google_app_id,
+      ),
+    );
+    drupal_add_html_head($data, 'google');
+    drupal_add_js('https://apis.google.com/js/platform.js?onload=google_onLoadGoogleCallback', array('external' => true, 'async' => true, 'defer' => true));
+  }
+}
+
+/**
+ * Helper function to check and make sure Google settings has been done.
+ */
+function _google_settings_is_done() {
+  // Get stored settings.
+  $google_app_id = variable_get('google_app_id', '');
+  $google_app_secret = variable_get('google_app_secret', '');
+
+  if ($google_app_id == '' or $google_app_secret == '') {
+    drupal_set_message(t('You have not done setting up Google App Id and Secret key.'), 'error');
+    return false;
+  }
+  
+  return true;
+}

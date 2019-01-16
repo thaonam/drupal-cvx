@@ -1,0 +1,83 @@
+.diary-title {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.activity-wrapper {
+  padding: 15px 15px 25px;
+  overflow-x: auto;
+}
+
+.activity-wrapper table {
+  width: 100%;
+}
+
+.activity-wrapper table th,
+.activity-wrapper table td {
+  border: solid 1px #ccc;
+  font-size: 12px;
+  color: #666;
+  min-width: 140px;
+}
+
+@media (min-width: 576px) {
+  .activity-wrapper table th,
+  .activity-wrapper table td {
+    font-size: 16px;
+  }
+}
+
+.activity-wrapper table th {
+  font-weight: 500;
+  padding: 5px 10px;
+  width: 20%;
+}
+
+@media (min-width: 576px) {
+  .activity-wrapper table th {
+    padding: 12px 20px;
+  }
+}
+
+.activity-wrapper table th:first-child {
+  width: 35%;
+}
+
+.activity-wrapper table th:last-child {
+  width: 45%;
+}
+
+.activity-wrapper table td {
+  padding: 5px 10px;
+}
+
+@media (min-width: 576px) {
+  .activity-wrapper table td {
+    padding: 20px;
+  }
+}
+
+.activity-description {
+  padding-left: 20px;
+  position: relative;
+}
+
+@media (min-width: 576px) {
+  .activity-description {
+    padding-left: 40px;
+  }
+}
+
+.activity-description:after {
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #ff6700;
+}

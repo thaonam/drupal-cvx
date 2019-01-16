@@ -1,0 +1,230 @@
+<?php
+/**
+ * Vimeo connect module.
+ */
+
+/**
+ * Implements hook_init().
+ */ 
+function vimeo_connect_init() {
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vimeo_connect_permission() {
+  return array(
+    'administer vimeo connect' => array(
+      'title' => t('Administer Vimeo connect'),
+      'description' => t('Perform administration tasks for Vimeo connect.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function vimeo_connect_menu() {
+  $items = array();
+
+  $items['vimeo_connect/test'] = array(
+    'page callback' => 'vimeo_connect_test',
+    'access arguments' => array('administer vimeo connect'),
+    'type' => MENU_CALLBACK,
+    'file' => 'vimeo_connect.inc',
+  );
+
+  $items['vimeo_connect/access_token'] = array(
+    'page callback' => 'vimeo_connect_access_token',
+    'access arguments' => array('administer vimeo connect'),
+    'type' => MENU_CALLBACK,
+    'file' => 'vimeo_connect.inc',
+  );
+
+  $items['vimeo_connect/video-is-ready'] = array(
+    'page callback' => 'vimeo_connect_video_is_ready',
+    'access arguments' => array('administer vimeo connect'),
+    'type' => MENU_CALLBACK,
+    'file' => 'vimeo_connect.inc',
+  );
+
+  $items['admin/config/vimeo_connect'] = array(
+    'title' => 'Vimeo settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vimeo_connect_settings_form'),
+    'access arguments' => array('administer vimeo connect'),
+    'file' => 'vimeo_connect.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function vimeo_connect_form_alter(&$form, &$form_state, $form_id) {
+  //dsm($form_id);
+  
+  switch ($form_id) {
+    case 'node_type_form':
+      // Add enabled Vimeo settings for content type.
+      $form['vimeo_connect'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Vimeo connect'),
+        '#collapsible' => true,
+        '#group' => 'additional_settings',
+        '#attached' => array(
+          'js' => array(
+            'vimeo-connect' => drupal_get_path('module', 'vimeo_connect') . '/vimeo_connect.js',
+          ),
+        ),
+      );
+      
+      $form['vimeo_connect']['vimeo_connect_enabled'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable Vimeo connect'),
+        '#description' => t('When checked, <em>Vimeo connect</em> will be active for this node type.'),
+        '#default_value' => variable_get('vimeo_connect_enabled_' . $form['#node_type']->type, 0),
+      );
+    
+      break;
+  }
+  
+  // Insert vimeo_connect to node form if enabled.
+  if (isset($form['#node_edit_form']) and $form['#node_edit_form'] and variable_get('vimeo_connect_enabled_' . $form['type']['#value'], 0)) {
+    // Put file uploader into this. 
+    drupal_add_js(array('vimeo_connect' => array('access_token' => variable_get('vimeo_connect_access_token', ''))), 'setting');
+    drupal_add_js(drupal_get_path('module', 'vimeo_connect') . '/vimeo_connect.js');
+    drupal_add_css(drupal_get_path('module', 'vimeo_connect') . '/vimeo_connect.css');
+    drupal_add_js('/sites/all/libraries/vimeo/uploader/vimeo-upload.js');
+
+    // Attach a Upload button next to Vimeo link field.
+    $form['vimeo_uploader'] = array(
+      '#markup' => '<div id="progress-container" class="progress" style="display: none"><div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="46" aria-valuemin="0" aria-valuemax="100" style="width: 0%">&nbsp;0%</div></div><input id="vimeo-connect-browse" type="file" style="display: none">',
+      '#weight' => $form['field_vimeo']['#weight'] - 1,
+    );
+
+    // Submit handler.
+    $form['#submit'][] = 'vimeo_connect_video_node_form_submit';
+  }
+}
+
+/**
+ * Implements hook_node_type_update().
+ */
+function vimeo_connect_node_type_update($info) {
+  if (!empty($info->old_type) && $info->type != $info->old_type) {
+    $settings = array(
+      'vimeo_connect_enabled',
+    );
+
+    foreach ($settings as $setting) {
+      if ($var = variable_get($setting . '_' . $info->old_type, NULL)) {
+        variable_set($setting . '_' . $info->type, $var);
+      }
+      variable_del($setting . '_' . $info->old_type);
+    }
+  }
+}
+
+/**
+ * Implements hook_node_type_delete().
+ */
+function vimeo_connect_node_type_delete($info) {
+  $settings = array(
+    'vimeo_connect_enabled',
+  );
+
+  foreach ($settings as $setting) {
+    variable_del($setting . '_' . $info->type);
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function vimeo_connect_node_delete($node) {
+  if (variable_get('vimeo_connect_enabled_' . $node->type, 0)) {
+    // Get the video id.
+    if (!empty($node->field_vimeo[LANGUAGE_NONE]) and $node->field_vimeo[LANGUAGE_NONE][0]['url'] != '') {
+      $params = preg_split('/\//', $node->field_vimeo[LANGUAGE_NONE][0]['url']);
+      $video_id = $params[count($params) - 1];
+
+      // Delete the video from Vimeo.
+      module_load_include('inc', 'vimeo_connect', 'vimeo_connect');
+      vimeo_connect_video_delete($video_id);
+    }
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function vimeo_connect_node_presave($node) {
+  if (variable_get('vimeo_connect_enabled_' . $node->type, 0)) {
+    $paths = preg_split('/\//', $node->field_vimeo['und'][0]['url']);
+    $video_id = $paths[count($paths) - 1];
+    $response = vimeo_connect_request('/videos/' . $video_id, array(), 'GET');
+
+    if ($response) {
+      //$form_state['values']['title'] = $response['name'];
+      $sizes_count = count($response['pictures']['sizes']);
+      $image_url = $response['pictures']['sizes'][$sizes_count - 1]['link'];
+      $duration = preg_replace('/^00\:/', '', gmdate('H:i:s', $response['duration']));
+
+      // Update video duration.
+      if (isset($node->field_vimeo_duration)) {
+        $form_state['values']['field_vimeo_duration'][LANGUAGE_NONE][0]['value'] = $duration;
+      }
+
+      // Get the image data, store into local server.
+      $result = drupal_http_request($image_url);
+      if ($result->code != 200) {
+        drupal_set_message(t('Failed to load image for node @nid data from Vimeo server.', array('@nid' => l($node->title, 'node/' . $node->nid))), 'error');
+        return;
+      }
+
+      // Update video cover.
+      $image_data = $result->data;
+      $base_name = str_replace('?r=pad', '', basename($image_url));
+      $file = file_save_data($image_data, 'public://vimeo-thumbnails/' . $base_name, FILE_EXISTS_REPLACE);
+      $node->field_vimeo_thumbnail['und'][0] = (array) $file;
+      image_path_flush($file->uri);
+    }
+  }
+}
+
+/**
+ * Vimeo connect video form submit.
+ */
+function vimeo_connect_video_node_form_submit($form, &$form_state) {
+  // Reload a new thumbnail by the video link.
+  module_load_include('inc', 'vimeo_connect', 'vimeo_connect');
+  
+  $paths = preg_split('/\//', $form_state['values']['field_vimeo'][LANGUAGE_NONE][0]['url']);
+  $video_id = $paths[count($paths) - 1];  
+  $response = vimeo_connect_request('/videos/' . $video_id, array(), 'GET');
+
+  if ($response) {
+    //$form_state['values']['title'] = $response['name'];
+    $sizes_count = count($response['pictures']['sizes']);
+    $image_url = $response['pictures']['sizes'][$sizes_count - 1]['link'];
+    $duration = preg_replace('/^00\:/', '', gmdate('H:i:s', $response['duration']));
+    
+    // Get the image data, store into local server.
+    $result = drupal_http_request($image_url);
+    if ($result->code != 200) {
+      drupal_set_message(t('Failed to load image data from Vimeo server.'), 'error');
+      return;
+    }
+    
+    // Update video cover.
+    $image_data = $result->data;
+    $file = file_save_data($image_data, 'public://vimeo-thumbnails/' . basename($image_url), FILE_EXISTS_REPLACE);
+    $form_state['values']['field_vimeo_thumbnail'][LANGUAGE_NONE][0] = (array)$file;
+    image_path_flush($file->uri);
+    
+    // Update video duration.
+    $form_state['values']['field_vimeo_duration'][LANGUAGE_NONE][0]['value'] = $duration;
+  }
+}

@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * Functions for the Custom Email Template module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function custom_email_template_install() {
+  // Parameter $sandbox is passed as a placeholder.
+  $sandbox = array();
+  custom_email_template_migrate_create_fields($sandbox);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function custom_email_template_uninstall() {
+  // Delete content types.
+  node_type_delete('mail_template');
+  // Delete variables.
+  $account_types = array('email_admin_created', 'email_pending_approval',
+    'email_no_approval_required', 'email_password_reset', 'email_blocked',
+    'email_activated', 'email_cancel_confirm', 'email_canceled',
+  );
+
+  foreach ($account_types as $account_type) {
+    variable_del($account_type . '_selection');
+    variable_del($account_type . '_header_links');
+    variable_del($account_type . '_footer_links');
+  }
+}

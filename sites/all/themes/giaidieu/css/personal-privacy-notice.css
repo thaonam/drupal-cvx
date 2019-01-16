@@ -1,0 +1,61 @@
+.user-change-pass-notice {
+  padding: 30px 15px 15px;
+}
+
+.user-change-pass-notice .notice-msg {
+  color: #484848;
+  margin-bottom: 20px;
+}
+
+.user-change-pass-notice .btn {
+  height: 40px;
+  line-height: 40px;
+  border-radius: 4px;
+  padding: 0 25px;
+  margin-bottom: 25px;
+}
+
+.privacy-notice {
+  padding: 30px 15px 15px;
+}
+
+.privacy-notice .notice-msg {
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.privacy-notice table {
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.privacy-notice table td {
+  padding: 20px;
+  border: solid 1px #d3d3d3;
+}
+
+.privacy-notice .notice-title {
+  font-size: 18px;
+  color: #484848;
+}
+
+.privacy-notice .notice-description {
+  font-size: 13px;
+  color: #999;
+  padding-top: 5px;
+}
+
+.privacy-notice .notice-action {
+  text-align: center;
+  display: block;
+  color: #0099cc;
+}
+
+.privacy-notice .notice-action:hover {
+  text-decoration: underline;
+}
+
+.privacy-notice .notice-action i {
+  color: #484848;
+  font-size: 20px;
+}

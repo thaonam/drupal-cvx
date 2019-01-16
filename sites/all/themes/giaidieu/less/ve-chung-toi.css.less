@@ -1,0 +1,75 @@
+.hospital-intro{
+	border: none;
+	position: relative;
+	border-bottom: 1px solid #ccc;
+	&:after{
+		content: '';
+	    background: #ccc;
+	    width: 100%;
+	    position: absolute;
+	    bottom: 0;
+	    height: 1px;
+	    left: 15px;
+	    display: block;
+	}
+}
+.hospital-activity{
+	.field-items{
+		display: flex;
+		width: 100vw;
+		left: 50%;
+	    -webkit-transform: translate(-50%, 0);
+	    -moz-transform: translate(-50%, 0);
+	    -o-transform: translate(-50%, 0);
+	    -ms-transform: translate(-50%, 0);
+	    transform: translate(-50%, 0);
+	    position: relative;
+	    a{
+	    	position: relative;
+	    	display: block;
+	    }
+	    a:after{
+	    	content: '';
+	    	position: absolute;
+		    height: 60%;
+		    width: 100%;
+		    left: 0;
+		    top: 100%;
+		    background: rgba(5, 125, 237, 0.44) url(../images/icons/zoom-in.png) center no-repeat;
+		    background-size: auto 28px;
+		    -webkit-transition: all 0.3s ease-in-out;
+		    -o-transition: all 0.3s ease-in-out;
+		    transition: all 0.3s ease-in-out;
+		    z-index: 1;
+		    visibility: hidden;
+		    opacity: 0;
+		    cursor: pointer;
+	    }
+	    a:hover:after{
+	    	opacity: 1;
+		    visibility: visible;
+		    top: 50%;
+		    -webkit-transform: translateY(-50%);
+		    -ms-transform: translateY(-50%);
+		    transform: translateY(-50%);
+	    }
+	}
+}
+.doctors-wrapper-top{
+	left: 50%;
+    -webkit-transform: translate(-50%, 0);
+    -moz-transform: translate(-50%, 0);
+    -o-transform: translate(-50%, 0);
+    -ms-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    width: 100vw;
+    position: relative;
+}
+// .carousel-doctor{
+//  	.owl-nav{
+//  		display: none;
+//  	}
+//  	.owl-dots{
+//  		margin-top: 40px;
+//  	}
+// }

@@ -1,0 +1,12 @@
+; $Id: uc_nganluong.info by Thiết kế web Giai Điệu $
+name = NganLuong Payment Gateway
+description = Process payments using NganLuong for Ubertcart - Made by giaidieu.com
+dependencies[] = uc_order
+dependencies[] = uc_payment
+package = Ubercart - payment
+core = 7.x
+
+version = "7.x-1.0"
+project = "ubercart"
+
+;stylesheets[all][] = uc_nganluong.css

@@ -1,0 +1,462 @@
+.page-node-329 {
+  #page-wrapper {
+    overflow: hidden;
+  }
+  #map {
+    margin-top: 75px;
+    height: 545px;
+    position: relative;
+    overflow: hidden;
+    left: 50%;
+    -webkit-transform: translate(-50%, 0);
+    -moz-transform: translate(-50%, 0);
+    -o-transform: translate(-50%, 0);
+    -ms-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    width: 100vw;
+  }
+  .owl-carousel {
+    .owl-controls {
+      margin-top: 0;
+    }
+    position: relative;
+    .owl-controls .owl-buttons div {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 25px;
+      height: 30px;
+      background-color: rgba(0, 0, 0, 0.3);
+      background-position: center;
+      background-size: auto 12px;
+      background-repeat: no-repeat;
+      font-size: 0;
+      transition: all 0.3s ease;
+      border-radius: 0;
+      @media (min-width: 768px) {
+        width: 50px;
+        height: 60px;
+        background-size: auto 20px;
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    .owl-controls .owl-buttons .owl-prev {
+      left: 10px;
+      background-image: url('../images/icons/left-arrow.png');
+
+      @media (min-width: 768px) {
+        left: 25px;
+      }
+    }
+
+    .owl-controls .owl-buttons .owl-next {
+      right: 10px;
+      background-image: url('../images/icons/right-arrow.png');
+
+      @media (min-width: 768px) {
+        right: 25px;
+      }
+    }
+  }
+
+  .contact-slideshow {
+    margin-bottom: 20px;
+
+    @media (min-width: 768px) {
+      //padding-top: 15px;
+      margin-bottom: 45px;
+    }
+  }
+  .contact-info-wrapper {
+    padding-top: 120px;
+    position: relative;
+    margin-bottom: 20px;
+    margin-left: -15px;
+    margin-right: -15px;
+
+    @media (min-width: 768px) {
+      padding-top: 160px;
+    }
+
+    li {
+      padding: 0 15px;
+      margin-bottom: 40px;
+
+      @media (min-width: 576px) {
+        width: 33.3333%;
+        float: left;
+        padding: 0 7px;
+      }
+
+      @media (min-width: 576px) {
+        padding: 0 15px;
+      }
+    }
+
+    &:before {
+      position: absolute;
+      content: '';
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 22px;
+      width: 250px;
+      background: url('../images/icons/heartbeat.png') center no-repeat;
+      background-size: contain;
+    }
+
+    .contact-info {
+      border: solid 1px #d3d3d3;
+      padding: 50px 15px 10px;
+      height: 150px;
+      font-size: 18px;
+      color: #333;
+      position: relative;
+      text-align: center;
+
+      @media (min-width: 576px) {
+        font-size: 12px;
+        padding: 50px 5px 10px;
+      }
+
+      @media (min-width: 768px) {
+        height: 220px;
+        padding: 80px 5px 10px;
+        font-size: 18px;
+      }
+
+      @media (min-width: 992px) {
+        padding: 80px 45px 10px;
+      }
+
+      .icon {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: solid 2px #ccc;
+        border-radius: 50%;
+        background-color: #057ded;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: auto 25px;
+        width: 50px;
+        height: 50px;
+
+        @media (min-width: 768px) {
+          width: 80px;
+          height: 80px;
+          background-size: auto 36px;
+        }
+      }
+
+      .icon-phone {
+        background-image: url('../images/icons/phone-call-white.png');
+      }
+
+      .icon-marker {
+        background-image: url('../images/icons/marker.png');
+      }
+
+      .icon-envelope {
+        background-image: url('../images/icons/envelope.png');
+      }
+    }
+  }
+  .title-lh .block-title {
+    font-size: 20px;
+    color: #057ded;
+    color: #333;
+    text-align: center;
+    font-weight: 500;
+    text-transform: capitalize;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    //border-bottom: solid 1px #ccc;
+    @media (min-width: 640px) {
+      font-size: 22px;
+    }
+    @media (min-width: 768px) {
+      font-size: 30px;
+    }
+
+    span {
+      color: #f60;
+    }
+  }
+  .webform-client-form {
+    margin: 0 -15px 30px;
+
+    @media (min-width: 768px) {
+      margin: 0 -15px 70px;
+    }
+
+    .captcha {
+      padding: 10px 15px 0;
+    }
+    .form-type-checkboxes {
+      position: relative;
+    }
+    .form-item {
+      padding: 0 15px;
+      float: left;
+
+      @media (min-width: 768px) {
+        width: 50%;
+      }
+      ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        color: #666;
+        font-size: 18px;
+      }
+      ::-moz-placeholder { /* Firefox 19+ */
+        color: #666;
+        font-size: 18px;
+      }
+      :-moz-placeholder { /* Firefox 18- */
+        color: #666;
+        font-size: 18px;
+      }
+      input, textarea, .control-label {
+        background-color: #f2f2f2;
+        border: none;
+        padding: 15px 20px;
+      }
+      input, &.form-item-submitted-other > .control-label {
+        height: 60px;
+      }
+      &.form-item-submitted-other > .control-label {
+        padding-top: 10px;
+        color: #666;
+        font-size: 18px;
+        font-weight: 500;
+        background-position: ~"calc(100% - 15px)" 26px;
+      }
+      textarea {
+        box-shadow: none;
+        border-radius: 4px;
+      }
+      .form-checkboxes {
+        display: table;
+        width: 100%;
+      }
+    }
+    #edit-submitted-other {
+      position: absolute;
+      top: 100%;
+      left: 15px;
+      width: ~"calc(100% - 30px)";
+    }
+    .form-type-textarea {
+      clear: both;
+      width: 100%;
+      .grippie {
+        display: none;
+      }
+    }
+    .form-item-submitted-other {
+      // @media (min-width: 768px) {
+      // float: right;
+      // }
+
+      > label {
+        font-size: 14px;
+        height: 40px;
+        color: #000;
+        padding: 0 15px;
+        line-height: 40px;
+        border: solid 1px #ccc;
+        border-radius: 4px;
+        display: block;
+        -webkit-box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.11);
+        box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.11);
+        -webkit-transition: all 0.3 ease;
+        -o-transition: all 0.3 ease;
+        transition: all 0.3 ease;
+        white-space: nowrap;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        background: url(../images/icons/caret-down-black.png) no-repeat;
+        background-size: auto 10px;
+        background-position: ~"calc(100% - 15px)" 15px;
+        margin-bottom: 0;
+
+        @media (min-width: 576px) {
+          font-size: 18px;
+        }
+      }
+    }
+    #edit-submitted-other {
+      display: none;
+      border: solid 1px #ccc;
+      margin-bottom: 20px;
+      .form-item {
+        padding: 0;
+        width: 100%;
+        margin: 0;
+      }
+      .form-item:not(:last-child) {
+        border-bottom: solid 1px #ccc;
+      }
+      input[type="checkbox"] {
+        display: none;
+      }
+      label {
+        display: inline-block;
+        display: inline-block;
+        color: #333;
+        width: 100%;
+        max-width: 100%;
+        font-weight: 700;
+        padding: 10px 15px;
+      }
+
+      label:before, label:after {
+        position: absolute;
+        content: '';
+        font-family: FontAwesome;
+        top: 12px;
+        right: 15px;
+        width: 15px;
+        height: 15px;
+        font-size: 16px;
+        color: #f60;
+      }
+      label:before {
+        border: solid 1px #d5d5d5;
+        border-radius: 3px;
+      }
+      label:after {
+        top: 8px;
+      }
+      label.check:after {
+        content: "\f00c";
+      }
+
+    }
+    .form-submit {
+      //float: right;
+      margin-left: 15px;
+      padding: 20px 15px 0;
+      background-color: #057ded;
+      font-size: 16px;
+      font-weight: 500;
+      text-transform: capitalize;
+      color: #fff;
+      padding: 0 32px;
+      border: solid 1px #057ded;
+      border-radius: 22px;
+      height: 40px;
+      line-height: 40px;
+      margin-right: 15px;
+      margin-top: 20px;
+      -webkit-transition: all 0.3s ease;
+      -o-transition: all 0.3s ease;
+      transition: all 0.3s ease;
+      background-color: #ff6000;
+      border-color: #ff6000;
+      &:hover,
+      &:focus {
+        background-color: #ff6000;
+        border-color: #ff6000;
+      }
+    }
+  }
+  // footer{
+  // 	margin-top: 40px;
+  // 	@media (min-width: 768px){
+  // 		margin-top: 75px;
+  // 	}
+  // }
+}
+/* dt css */
+@media (max-width: 992px) and (min-width: 768px) {
+  .contact-info {
+    .doctors {
+      .title {
+        font-size: 22px !important;
+        padding: 15px !important;
+      }
+      li {
+        padding: 15px 0 !important;
+        margin: 0 15px !important;
+        &:before {
+          font-size: 35px !important;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 992px) {
+  .contact-info {
+    .timetable {
+      .title {
+        font-size: 22px !important;
+      }
+      ul {
+        font-size: 16px !important;
+        padding: 0 20px 30px !important;
+      }
+      li {
+        padding-bottom: 10px !important;
+        padding-top: 15px !important;
+      }
+    }
+  }
+  .page-node-329 {
+    .webform-client-form {
+      .form-item {
+        input, &.form-item-submitted-other > .control-label {
+          height: 45px !important;
+          margin-bottom: 0 !important;
+          padding-bottom: 0 !important;
+          padding-top: 0 !important;
+          line-height: 45px !important;
+          box-shadow: none;
+        }
+        &.form-item-submitted-other > .control-label {
+          background-position: calc(95%) 18px !important;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 767px) {
+  .contact-info {
+    margin: 70px 0 20px !important;
+    .doctors, .timetable {
+      margin-bottom: 15px !important;
+    }
+  }
+  .contact-info .doctors .title {
+    font-size: 22px!important;
+    padding: 15px 15px!important;
+  }
+  .contact-info .doctors li {
+    padding: 12px 10px 12px 20px!important;
+  }
+  .contact-info .timetable .title {
+    text-align: center !important;
+  }
+}
+@media (max-width: 700px) {
+  .page-node-329 .webform-client-form .form-item {
+    width: 100% !important;
+  }
+}
+@media (max-width: 425px) {
+  .contact-info .doctors .title {
+    font-size: 20px !important;
+  }
+  .contact-info .doctors li {
+    //margin: 0 30px !important;
+    font-size: 16px !important;
+  }
+  .contact-info .doctors li:before {
+    font-size: 30px !important;
+  }
+}

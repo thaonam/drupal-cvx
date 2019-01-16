@@ -1,0 +1,12 @@
+.personal-service {
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.personal-service .title,
+.personal-service .content {
+  padding-left: 15px;
+  padding-right: 15px;
+}

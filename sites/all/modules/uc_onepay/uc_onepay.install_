@@ -1,0 +1,62 @@
+<?php
+//$Id: uc_onepay.install,v 2.0 2012/04/06 18:02:38 thuanmd Onepay Exp $
+
+/**
+ * @file
+ * Installs the table used to store account data until payments are processed.
+ */
+
+
+/**
+ * Implementation of hook_schema().
+ */
+function uc_onepay_schema() {
+  $schema = array();
+
+  $schema['uc_payment_onepay'] = array(
+    'fields' => array(     
+      'vpc_MerchTxnRef' => array(
+        'description' => t('Merchant Txn Ref'),
+        'type' => 'varchar',
+        'length' => 34,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'vpc_DO' => array(
+        'description' => t('URL request'),
+        'type' => 'varchar',
+        'length' => 550,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+	  'vpc_DR' => array(
+        'description' => t('URL response'),
+        'type' => 'varchar',
+        'length' => 550,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+    ),
+    
+    'primary key' => array('vpc_MerchTxnRef'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function uc_onepay_install() {
+  drupal_install_schema('uc_onepay');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function uc_onepay_uninstall() {
+  drupal_uninstall_schema('uc_onepay');
+
+  db_query("DELETE FROM {variable} WHERE name LIKE 'uc_onepay%%'");
+}
+

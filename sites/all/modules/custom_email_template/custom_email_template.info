@@ -1,0 +1,11 @@
+name = Custom Email Template
+description = "Allows editing of e-mail templates."
+dependencies[] = link
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2016-06-12
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "custom_email_template"
+datestamp = "1465712640"
+

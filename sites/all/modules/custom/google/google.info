@@ -1,0 +1,10 @@
+name = Giai Điệu Google
+description = Google login and other features - Made by giaidieu.com.
+core = 7.x
+
+configure = admin/config/google
+
+package = "Giai Điệu"
+project = "google"
+version = "7.x-1.0"
+dependencies[] = custom:custom

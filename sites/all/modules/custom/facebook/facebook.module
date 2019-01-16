@@ -1,0 +1,60 @@
+<?php
+/**
+ * Facebook module created by giaidieu.com on 05 Oct 2017.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function facebook_permission() {
+  return array(
+    'administer facebook settings' => array(
+      'title' => t('Administer facebook settings'),
+      'description' => t('Perform administration tasks for Facebook.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function facebook_menu() {
+  $items = array();
+
+  $items['admin/config/facebook'] = array(
+    'title' => 'Facebook settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('facebook_settings_form'),
+    'access arguments' => array('administer facebook settings'),
+    'file' => 'facebook.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Function to enable Facebook login for the caller site.
+ */
+function facebook_enable_login_button() {
+  $facebook_app_id = variable_get('facebook_app_id', '');
+  if ($facebook_app_id != '') {
+    drupal_add_js(array('facebook_app_id' => $facebook_app_id), 'setting');
+    //drupal_add_js(drupal_get_path('module', 'facebook') . '/facebook.js');
+  }
+}
+
+/**
+ * Helper function to check and make sure Facebook settings has been done.
+ */
+function _facebook_settings_is_done() {
+  // Get stored settings.
+  $facebook_app_id = variable_get('facebook_app_id', '');
+  $facebook_app_secret = variable_get('facebook_app_secret', '');
+
+  if ($facebook_app_id == '' or $facebook_app_secret == '') {
+    drupal_set_message(t('You have not done setting up Facebook App Id and Secret key.'), 'error');
+    return false;
+  }
+  
+  return true;
+}

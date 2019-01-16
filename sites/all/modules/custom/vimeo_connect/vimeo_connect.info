@@ -1,0 +1,10 @@
+name = Giai Điệu Vimeo
+description = Connect to Vimeo account for API calls - Made by giaidieu.com.
+core = 7.x
+
+configure = admin/config/vimeo_connect
+
+package = Giai Điệu
+project = "vimeo_connect"
+version = "7.x-1.0"
+dependencies[] = custom:custom

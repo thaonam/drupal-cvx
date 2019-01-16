@@ -1,0 +1,10 @@
+name = Giai Điệu Sub-domain
+description = Provide solution for sub-domain implementation for the site - Made by giaidieu.com.
+package = Giai Điệu
+
+version = "7.x-3.0"
+core = "7.x"
+project = "subdomain"
+configure = admin/config/services/subdomain
+dependencies[] = email_registration:email_registration
+dependencies[] = custom:custom

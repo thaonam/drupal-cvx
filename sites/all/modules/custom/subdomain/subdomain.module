@@ -1,0 +1,159 @@
+<?php /* Subdomain module created by giaidieu */
+
+/**
+ * Implements hook_permission().
+ */
+function subdomain_permission() {
+  return array(
+    'administer subdomain settings' => array(
+      'title' => t('Administer Subdomain settings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function subdomain_menu() {
+  $items = array();
+
+  $items['admin/config/services/subdomain'] = array(
+    'title' => 'Sub-domain settings',
+    'description' => 'Sub-domain settings for site.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('subdomain_settings_form'),
+    'access arguments' => array('administer subdomain settings'),
+    'file' => 'subdomain.admin.inc',
+  );
+
+  $items['admin/config/services/subdomain/%/edit'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('subdomain_settings_form', 4, 5),
+    'access arguments' => array('administer subdomain settings'),
+    'file' => 'subdomain.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/services/subdomain/%/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('subdomain_settings_form', 4, 5),
+    'access arguments' => array('administer subdomain settings'),
+    'file' => 'subdomain.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Detect if a URL is a subdomain request.
+ */
+function subdomain_is_subdomain_url() {
+  $domain = variable_get('subdomain_domain', $_SERVER['SERVER_NAME']);
+  $sub_domain = preg_replace('/' . $domain . '$/', '', $_SERVER['SERVER_NAME']);
+  $sub_domain = $sub_domain ? preg_replace('/\.$/', '', $sub_domain) : '';
+  
+  return $sub_domain;
+}
+
+/**
+ * Function to make the URL from redirect token.
+ */
+function subdomain_make_url_from_redirect_token() {
+  $token_url = variable_get('subdomain_redirect_url_token', '');
+  if ($token_url == '') {
+    watchdog('subdomain', 'Please configure the subdomain setting page in order for it to work.');
+    return '';
+  }
+  
+  // Get the subdomain.
+  $subdomain = subdomain_is_subdomain_url();
+  if ($subdomain == '') {return '';}
+  
+  // Get User id by the subdomain.
+  $row = _subdomain_load_record_by_subdomain($subdomain);
+  if (!$row) {return '';}
+
+  $tokens = array('/\[subdomain\]/', '/\[uid\]/');
+  $replacements = array($subdomain, $row->uid);
+  
+  return preg_replace($tokens, $replacements, $token_url);
+}
+
+/**
+ * Helper function to clean up a subdomain name.
+ */
+function _subdomain_clean_up_name($subdomain_name) {
+  if (module_exists('email_registration')) {
+    $subdomain_name = preg_replace('/\s+|\./', '-', strtolower(email_registration_cleanup_username($subdomain_name)));
+  }
+  else{
+    watchdog('subdomain', 'Please enable email_registration module for subdomain to work properly.');
+  }
+  
+  return $subdomain_name;
+}
+
+/**
+ * Helper function to create a new sub-domain after validation.
+ */
+function _subdomain_subdomain_save($uid, $subdomain_name) {
+  // Clean up the name.
+  $subdomain_name = _subdomain_clean_up_name($subdomain_name);
+  
+  // Load if already exists sub-domain for this user.
+  $subdomain = _subdomain_load_record_by_uid($uid);
+
+  if ($subdomain) {
+    if ($subdomain->subdomain != $subdomain_name) {
+      // Store the edit.
+      $subdomain->subdomain = $subdomain_name;
+      drupal_write_record('subdomain', $subdomain, array('id'));
+    }
+  }
+  else{
+    // Write the subdomain record.
+    $subdomain = new stdClass();
+    $subdomain->uid = $uid;
+    $subdomain->subdomain = $subdomain_name;
+    drupal_write_record('subdomain', $subdomain);
+  }
+}
+
+/**
+ * Helper function to load record by id.
+ */
+function _subdomain_load_record_by_id($id) {
+  $result = db_query("SELECT id, uid, subdomain FROM {subdomain} WHERE id=:id", array(':id' => $id));
+  foreach ($result as $row) {
+    return $row;
+  }
+  
+  return null;
+}
+
+/**
+ * Helper function to load record by subdomain.
+ */
+function _subdomain_load_record_by_subdomain($subdomain) {
+  $subdomain = _subdomain_clean_up_name($subdomain);
+  
+  $result = db_query("SELECT id, uid, subdomain FROM {subdomain} WHERE subdomain=:subdomain", array(':subdomain' => $subdomain));
+  foreach ($result as $row) {
+    return $row;
+  }
+  
+  return null;
+}
+
+/**
+ * Helper function to load record by uid.
+ */
+function _subdomain_load_record_by_uid($uid) {
+  $result = db_query("SELECT id, uid, subdomain FROM {subdomain} WHERE uid=:uid", array(':uid' => $uid));
+  foreach ($result as $row) {
+    return $row;
+  }
+  
+  return null;
+}

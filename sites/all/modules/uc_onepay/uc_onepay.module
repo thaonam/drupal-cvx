@@ -1,0 +1,320 @@
+<?php 
+// $Id: uc_onepay.module by Thiết kế web Giai Điệu $
+
+/**
+ * Implements hook_menu().
+ */
+function uc_onepay_menu() {
+  $items = array();
+
+  $items['cart/onepay_card/complete'] = array(
+    'title' => 'Order complete',
+    'page callback' => 'uc_onepay_complete',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_onepay.pages.inc',
+  );
+
+  $items['cart/onepay_atm/complete'] = array(
+    'title' => 'Order complete',
+    'page callback' => 'uc_onepay_complete',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_onepay.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_uc_payment_method().
+ */
+function uc_onepay_uc_payment_method() {
+  $methods['onepay_card'] = array(
+    'name' => t('OnePay Debit / Credit card payment'),
+    'title' => t('OnePay Debit / Credit card payment'),
+    'desc' => t('Redirect to OnePay Payment Gateway to pay using your debit / credit card.'),
+    'callback' => 'uc_payment_method_onepay_card',
+    'redirect' => 'uc_onepay_card_form',
+    'weight' => 3,
+    'checkout' => TRUE,
+    'no_gateway' => TRUE,
+  );
+
+  $methods['onepay_atm'] = array(
+    'name' => t('OnePay ATM payment'),
+    'title' => t('OnePay ATM payment'),
+    'desc' => t('Redirect to OnePay Payment Gateway to pay by ATM.'),
+    'callback' => 'uc_payment_method_onepay_atm',
+    'redirect' => 'uc_onepay_atm_form',
+    'weight' => 4,
+    'checkout' => TRUE,
+    'no_gateway' => TRUE,
+  );
+
+  return $methods;
+}
+
+/**
+ * Adds OnePay settings to the payment method settings form.
+ *
+ * @see uc_onepay_uc_payment_method()
+ */
+function uc_payment_method_onepay_card($op, &$order, $form = NULL, &$form_state = NULL) {
+  switch ($op) {
+    case 'settings':
+      $form['uc_onepay_card_gateway_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Payment gateway URL'),
+        '#default_value' => variable_get('uc_onepay_card_gateway_url', ''),
+        '#required' => true,
+      );
+
+      $form['uc_onepay_card_secure_secret'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Secure secret'),
+        '#default_value' => variable_get('uc_onepay_card_secure_secret', ''),
+        '#required' => true,
+      );
+
+      $form['uc_onepay_card_access_code'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Access code'),
+        '#default_value' => variable_get('uc_onepay_card_access_code', ''),
+        '#required' => true,
+      );
+
+      $form['uc_onepay_card_merchant_id'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Merchant id'),
+        '#default_value' => variable_get('uc_onepay_card_merchant_id', ''),
+        '#required' => true,
+      );
+      
+      return $form;
+  }
+}
+
+/**
+ * Form to build the submission to OnePay.
+ */
+function uc_onepay_card_form($form, &$form_state, $order) {
+  //dsm($order);
+  
+  // Prepare data.
+  global $user;
+  global $language;
+  $ref = md5('gd' . time());
+  
+  // Rating.
+  // $exchange_rate = '21770'; // Ty gia ngay 11-06-2015.
+  if ($language->language == 'vi') {
+    $exchange_rate = 1;
+  }
+  else{
+    $exchange_rate = custom_currency_converter();
+  }
+  
+  $data = array(
+    'AgainLink' => urlencode($_SERVER['HTTP_REFERER']),
+    'Title' => variable_get('site_name', 'Thiết kế web Giai Điệu'),
+    'vpc_AccessCode' => variable_get('uc_onepay_card_access_code', ''),
+    'vpc_Amount' => floor($form_state['build_info']['args'][0]->order_total * $exchange_rate * 100),
+    'vpc_Command' => 'pay',
+    'vpc_Customer_Email' => $form_state['build_info']['args'][0]->primary_email,
+    //'vpc_Customer_Id' => isset($user->name) ? $user->name : 'Anonymous',
+    //'vpc_Customer_Phone' => $form_state['build_info']['args'][0]->billing_phone,
+    'vpc_Locale' => 'en',
+    'vpc_MerchTxnRef' => $ref,
+    'vpc_Merchant' => variable_get('uc_onepay_card_merchant_id', ''),
+    'vpc_OrderInfo' => 'Order id: ' . $order->order_id,
+    'vpc_ReturnURL' => 'http://' . $_SERVER['HTTP_HOST'] . '/cart/onepay_card/complete',
+    'vpc_TicketNo' => $_SERVER['REMOTE_ADDR'],
+    'vpc_Version' => 2,
+    //'vpc_Currency' => $order->currency,
+  );
+  
+  foreach ($data as $name => $value) {
+    $form[$name] = array('#type' => 'hidden', '#value' => $value);
+  }
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit order'),
+  );
+
+  return $form;
+}
+
+/**
+ * OnePay submission form.
+ */
+function uc_onepay_card_form_submit($form, &$form_state) {
+  $secure_secret = variable_get('uc_onepay_card_secure_secret', '');
+  $params = array(
+    'AgainLink' => $form_state['values']['AgainLink'],
+    'Title' => $form_state['values']['Title'],
+    'vpc_AccessCode' => $form_state['values']['vpc_AccessCode'],
+    'vpc_Amount' => $form_state['values']['vpc_Amount'],
+    'vpc_Command' => $form_state['values']['vpc_Command'],
+    'vpc_Customer_Email' => $form_state['values']['vpc_Customer_Email'],
+    //'vpc_Customer_Id' => $form_state['values']['vpc_Customer_Id'],
+    //'vpc_Customer_Phone' => $form_state['values']['vpc_Customer_Phone'],
+    'vpc_Locale' => $form_state['values']['vpc_Locale'],
+    'vpc_MerchTxnRef' => $form_state['values']['vpc_MerchTxnRef'],
+    'vpc_Merchant' => $form_state['values']['vpc_Merchant'],
+    'vpc_OrderInfo' => $form_state['values']['vpc_OrderInfo'],
+    'vpc_ReturnURL' => $form_state['values']['vpc_ReturnURL'],
+    'vpc_TicketNo' => $form_state['values']['vpc_TicketNo'],
+    'vpc_Version' => $form_state['values']['vpc_Version'],
+  );
+  
+  ksort($params);
+  
+  $md5HashData = '';
+  $onepay_url = variable_get('uc_onepay_card_gateway_url', '') . '?';
+  foreach ($params as $key => $value) {
+    if ((strlen($value) > 0) && ((substr($key, 0,4)=="vpc_") || (substr($key,0,5) =="user_"))) {
+      $md5HashData .= $key . "=" . $value . "&";
+    }
+
+    $onepay_url .= urlencode($key) . '=' . urlencode($value) . '&';
+  }
+  $md5HashData = rtrim($md5HashData, '&');
+
+  $onepay_url .= 'vpc_SecureHash=' . strtoupper(hash_hmac('SHA256', $md5HashData, pack('H*', $secure_secret)));
+  $form_state['redirect'] = $onepay_url;
+}
+
+/**
+ * Adds OnePay settings to the payment method settings form.
+ *
+ * @see uc_onepay_uc_payment_method()
+ */
+function uc_payment_method_onepay_atm($op, &$order, $form = NULL, &$form_state = NULL) {
+  switch ($op) {
+    case 'settings':
+      $form['uc_onepay_atm_gateway_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Payment gateway URL'),
+        '#default_value' => variable_get('uc_onepay_atm_gateway_url', ''),
+        '#required' => true,
+      );
+
+      $form['uc_onepay_atm_secure_secret'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Secure secret'),
+        '#default_value' => variable_get('uc_onepay_atm_secure_secret', ''),
+        '#required' => true,
+      );
+
+      $form['uc_onepay_atm_access_code'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Access code'),
+        '#default_value' => variable_get('uc_onepay_atm_access_code', ''),
+        '#required' => true,
+      );
+
+      $form['uc_onepay_atm_merchant_id'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Merchant id'),
+        '#default_value' => variable_get('uc_onepay_atm_merchant_id', ''),
+        '#required' => true,
+      );
+      
+      return $form;
+  }
+}
+
+/**
+ * Form to build the submission to OnePay.
+ */
+function uc_onepay_atm_form($form, &$form_state, $order) {
+  //dsm($order);
+  
+  // Prepare data.
+  global $user;
+  global $language;
+  $ref = md5('gd' . time());
+  
+  // Rating.
+  // $exchange_rate = '21770'; // Ty gia ngay 11-06-2015.
+  if ($language->language == 'vi') {
+    $exchange_rate = 1;
+  }
+  else{
+    $exchange_rate = custom_currency_converter();
+  }
+  
+  $data = array(
+    'AgainLink' => urlencode($_SERVER['HTTP_REFERER']),
+    'Title' => variable_get('site_name', 'Thiết kế web Giai Điệu'),
+    'vpc_AccessCode' => variable_get('uc_onepay_atm_access_code', ''),
+    'vpc_Amount' => floor($form_state['build_info']['args'][0]->order_total * $exchange_rate * 100),
+    'vpc_Command' => 'pay',
+    'vpc_Customer_Email' => $form_state['build_info']['args'][0]->primary_email,
+    //'vpc_Customer_Id' => isset($user->name) ? $user->name : 'Anonymous',
+    //'vpc_Customer_Phone' => $form_state['build_info']['args'][0]->billing_phone,
+    'vpc_Locale' => 'en',
+    'vpc_MerchTxnRef' => $ref,
+    'vpc_Merchant' => variable_get('uc_onepay_atm_merchant_id', ''),
+    'vpc_OrderInfo' => 'Order id: ' . $order->order_id,
+    'vpc_ReturnURL' => 'http://' . $_SERVER['HTTP_HOST'] . '/cart/onepay_atm/complete',
+    'vpc_TicketNo' => $_SERVER['REMOTE_ADDR'],
+    'vpc_Version' => 2,
+    //'vpc_Currency' => $order->currency,
+  );
+  
+  foreach ($data as $name => $value) {
+    $form[$name] = array('#type' => 'hidden', '#value' => $value);
+  }
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit order'),
+  );
+
+  return $form;
+}
+
+/**
+ * OnePay submission form.
+ */
+function uc_onepay_atm_form_submit($form, &$form_state) {
+  $secure_secret = variable_get('uc_onepay_atm_secure_secret', '');
+  $params = array(
+    'AgainLink' => $form_state['values']['AgainLink'],
+    'Title' => $form_state['values']['Title'],
+    'vpc_AccessCode' => $form_state['values']['vpc_AccessCode'],
+    'vpc_Amount' => $form_state['values']['vpc_Amount'],
+    'vpc_Command' => $form_state['values']['vpc_Command'],
+    'vpc_Customer_Email' => $form_state['values']['vpc_Customer_Email'],
+    //'vpc_Customer_Id' => $form_state['values']['vpc_Customer_Id'],
+    //'vpc_Customer_Phone' => $form_state['values']['vpc_Customer_Phone'],
+    'vpc_Locale' => $form_state['values']['vpc_Locale'],
+    'vpc_MerchTxnRef' => $form_state['values']['vpc_MerchTxnRef'],
+    'vpc_Merchant' => $form_state['values']['vpc_Merchant'],
+    'vpc_OrderInfo' => $form_state['values']['vpc_OrderInfo'],
+    'vpc_ReturnURL' => $form_state['values']['vpc_ReturnURL'],
+    'vpc_TicketNo' => $form_state['values']['vpc_TicketNo'],
+    'vpc_Version' => $form_state['values']['vpc_Version'],
+  );
+  
+  ksort($params);
+  
+  $md5HashData = '';
+  $onepay_url = variable_get('uc_onepay_atm_gateway_url', '') . '?';
+  foreach ($params as $key => $value) {
+    if ((strlen($value) > 0) && ((substr($key, 0,4)=="vpc_") || (substr($key,0,5) =="user_"))) {
+      $md5HashData .= $key . "=" . $value . "&";
+    }
+
+    $onepay_url .= urlencode($key) . '=' . urlencode($value) . '&';
+  }
+  $md5HashData = rtrim($md5HashData, '&');
+
+  $onepay_url .= 'vpc_SecureHash=' . strtoupper(hash_hmac('SHA256', $md5HashData, pack('H*', $secure_secret)));
+  $form_state['redirect'] = $onepay_url;
+}

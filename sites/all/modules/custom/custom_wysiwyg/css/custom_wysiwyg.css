@@ -1,0 +1,146 @@
+/* CSS for custom_wysiwyg module created by giaidieu */
+
+table[role="presentation"] tr td:last-child {
+  border: none;
+}
+div.cke_dialog_tabs {
+  left: auto;
+  right: 11px;
+}
+.custom-user-files-wrapper div.file-wrapper {
+  border: 1px solid #e6e6e6;
+  /*margin-right: 10px;*/
+  /*float: left;*/
+  /*display: block;*/
+  /*margin-bottom: 10px;*/
+  width: 100px;
+}
+div.file-wrapper.selected {
+  border-color: #057ded;
+  position: relative;
+}
+div.file-wrapper:focus,
+div.file-wrapper:hover {
+  border-color: #057ded;
+}
+div.file-wrapper.selected::before {
+  content: "\f00c";
+  font-family: FontAweSome;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #057ded;
+  font-size: 30px;
+  z-index: 1;
+}
+div.file-wrapper.selected span {
+  color: #057ded;
+}
+.media-wrapper {
+  position: relative;
+}
+div.file-wrapper span {
+  display: block;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px;
+  /*update 28/12*/
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffffdb;
+  /*border-top: 1px solid #ccc;*/
+  /* color: #09f; */
+  font-weight: 500;
+}
+div.file-wrapper div.image-wrapper {
+  width: 100px;
+  height: 100px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+div.cke_dialog_page_contents {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+#media-tabs-wrapper ul.tab-items {
+  border-bottom: 1px solid #ddd;
+  text-align: right;
+}
+#media-tabs-wrapper ul.tab-items li {
+  display: inline-block;
+  margin-left: 1px;
+  border: 1px solid #ddd;
+  border-radius: 5px 5px 0 0;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-bottom: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  background-color: #ddd;
+}
+#media-tabs-wrapper ul.tab-items li.active {
+  background-color: #fff;
+  cursor: default;
+}
+#media-content-wrapper div.media-tab-content {
+  display: none;
+}
+#media-content-wrapper div.media-tab-content.active {
+  display: block;
+}
+.page-user-video div.ui-dialog,
+.custom_wysiwyg_media div.ui-dialog {
+  max-width: none !important;
+}
+.custom-user-files-wrapper {
+  padding: 0 !important;
+  overflow: inherit !important;
+}
+.custom-user-files-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.media-tab-content .form-control.form-text {
+  height: 34px;
+}
+div#giaidieu-media-files-upload-placeholder span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-transform: capitalize;
+}
+div#giaidieu-media-files-upload-placeholder {
+  height: 300px;
+  width: 100%;
+  background: linear-gradient(#fff 10%, #ebebeb);
+  position: relative;
+}
+.ui-dialog-buttonset button[type='button'] {
+  background: #057ded;
+  text-transform: capitalize;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  padding: 7px 10px;
+  outline: none
+}
+.ui-dialog-buttonset button.button-cancel {
+  background: #ccc;
+  color: #000;
+}
+.ui-dialog-buttonset button.button-ok:hover {
+  background: #1c64a8;
+}
+.ui-dialog-buttonset button.button-cancel:hover {
+  background: #f60;
+  color: #fff;
+}

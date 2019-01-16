@@ -1,0 +1,46 @@
+<?php
+/**
+ * @file
+ * Installation of zalo login table schema.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function zalo_schema() {
+  $schema['zalo_login'] = array(
+    'description' => 'Zalo login table.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Zalo user id.',
+        'type' => 'int',
+        'not null' => true,
+        'size' => 'big',
+      ),
+      'uid' => array(
+        'description' => 'Drupal user id of current user.',
+        'type' => 'int',
+        'not null' => true,
+      ),
+      'created' => array(
+        'description' => 'Timestamp when this record is created.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'id'    => array('id'),
+      'uid'  => array('uid'),
+      'created'   => array('created'),
+    ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'uid' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+  
+  return $schema;
+}

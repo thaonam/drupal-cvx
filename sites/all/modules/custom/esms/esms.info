@@ -1,0 +1,9 @@
+name = Giai Điệu eSMS.vn
+description = Intergrates eSMS.vn Gateway - Made by giaidieu.com.
+package = Giai Điệu
+
+version = "7.x-1.0"
+core = "7.x"
+project = "esms"
+configure = admin/config/services/esms
+dependencies[] = custom:custom

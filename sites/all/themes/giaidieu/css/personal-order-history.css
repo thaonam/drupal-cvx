@@ -1,0 +1,86 @@
+.order-history-wrapper {
+  padding: 15px 0 20px;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .order-history-wrapper {
+    padding: 15px 15px 40px;
+  }
+}
+
+.order-history-wrapper table {
+  width: 100%;
+}
+
+.order-history-wrapper table td,
+.order-history-wrapper table th {
+  border: solid 1px #ccc;
+  padding: 5px 10px;
+  font-size: 12px;
+  min-width: 100px;
+}
+
+@media (min-width: 768px) {
+  .order-history-wrapper table td,
+  .order-history-wrapper table th {
+    padding: 15px 20px;
+    font-size: 14px;
+  }
+}
+
+.order-history-wrapper table th {
+  color: #484848;
+  font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .order-history-wrapper table th {
+    font-size: 16px;
+  }
+}
+
+.order-history-wrapper table td {
+  color: #777;
+}
+
+.form-date-filter {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: 30px;
+}
+
+.form-date-filter .to {
+  color: #484848;
+  padding: 0 15px;
+  margin-bottom: 15px;
+}
+
+.form-date-filter input[type="date"] {
+  width: 235px;
+  border: none;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 9px 20px;
+  color: #777;
+  font-weight: 300;
+  background-image: url("../images/icons/calendar.png");
+  background-size: auto 15px;
+  background-position: calc(100% - 20px) 12px;
+  background-repeat: no-repeat;
+  outline: none;
+  margin-bottom: 15px;
+}
+
+.form-date-filter input[type="date"]:hover, .form-date-filter input[type="date"]:focus {
+  background-image: none;
+}

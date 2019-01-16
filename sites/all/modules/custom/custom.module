@@ -1,0 +1,2264 @@
+<?php /* Custom module created by giaidieu */
+
+/**
+ * Implements hook_init().
+ */
+function custom_init() {
+  global $user;
+  if (arg(0) == 'admin' && $user->uid == 0) {
+    drupal_access_denied();
+    exit();
+  }
+  
+  // Load our helper functions module.
+  module_load_include('inc', 'custom', 'custom.helper');
+  
+  // Load the js/css for every page.
+  drupal_add_js(drupal_get_path('module', 'custom') . '/js/giaidieu.helper.js');
+  drupal_add_js(drupal_get_path('module', 'custom') . '/js/giaidieu.func.js');
+  drupal_add_js(drupal_get_path('module', 'custom') . '/custom.js');
+  drupal_add_css(drupal_get_path('module', 'custom') . '/custom.css');
+  
+  if (arg(0) != 'admin') {
+    drupal_add_library('system', 'ui.dialog');
+    drupal_add_js(drupal_get_path('module', 'custom') . '/js/jquery.storageapi.min.js');
+    
+    // Load social login.
+    if (module_exists('facebook')) {
+      facebook_enable_login_button();
+      drupal_add_js(drupal_get_path('module', 'facebook') . '/facebook.js');
+    }
+    if (module_exists('google')) {
+      google_enable_login_button();
+      drupal_add_js(drupal_get_path('module', 'google') . '/google.js');
+    }
+    if (module_exists('zalo')) {
+      drupal_add_js(drupal_get_path('module', 'zalo') . '/zalo.js');
+    }
+    
+    // Load mobile data for validation.
+    drupal_add_js(drupal_get_path('module', 'custom') . '/js/mobilevn.js');
+    
+    // Load videojs for all pages.
+    drupal_add_css('//cdnjs.cloudflare.com/ajax/libs/video.js/6.3.3/video-js.css', ['type' => 'external']);
+    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/video.js/6.3.3/video.js', ['type' => 'external']);
+    drupal_add_js(drupal_get_path('module', 'custom') . '/js/node_modules/videojs-youtube/dist/Youtube.min.js');
+    
+    drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/giaidieu.video.css');
+    drupal_add_js(drupal_get_path('module', 'custom') . '/js/giaidieu.video.js', [
+      'type' => 'file',
+      'scope' => 'footer',
+    ]);
+    
+    drupal_add_js(drupal_get_path('module', 'custom') . '/js/node_modules/select2/dist/js/select2.full.min.js');
+    drupal_add_css(drupal_get_path('module', 'custom') . '/js/node_modules/select2/dist/css/select2.min.css');
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function custom_menu() {
+  module_load_include('inc', 'custom', 'custom.menu');
+  return custom_menu_items_get();
+}
+
+function _check_access($url) {
+  global $user;
+  if ($url == 'admin') {
+    return $user->uid == 1 || array_key_exists($user->roles, 3);
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_custom_theme()
+ */
+function custom_custom_theme() {
+  // Switch admin theme for superadmin, and webmaster users.
+  if (!user_access('view the administration theme')) {
+    return;
+  }
+  
+  if (arg(0) == 'admin' || (arg(0) == 'node' and arg(1) == 'add') || (arg(0) == 'node' and is_numeric(arg(1)) and arg(2) == 'edit') || (arg(0) == 'user' and is_numeric(arg(1)) and arg(2) == 'edit') || (arg(0) == 'file' and arg(1) == 'add') || (arg(0) == 'node' and arg(2) == 'translate') || (arg(0) == 'taxonomy' and arg(1) == 'term' and arg(3) == 'edit') || (arg(0) == 'node' and is_numeric(arg(1)) and arg(2) == 'webform')) {
+    // Switch to admin theme.
+    global $user;
+    
+    if ($user->uid == 1) {
+      // Developer theme.
+      return ['seven'];
+    }
+    else {
+      if (isset($user->roles[3]) || isset($user->roles[6])) {
+        // Webmaster theme.
+        return ['giaidieuadmin'];
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function custom_user_insert(&$edit, $account, $category) {
+  $full_name = (!empty($account->field_full_name)) ? $account->field_full_name[LANGUAGE_NONE][0]['value'] : '';
+  // Create a user profile base on user Account type.
+  if (!empty($account->field_account_type[LANGUAGE_NONE])) {
+    switch ($account->field_account_type[LANGUAGE_NONE][0]['value']) {
+      case 0:
+        // Create customer profile.
+        custom_node_create($account->uid, $account->name, 'customer', $full_name);
+        break;
+      
+      case 1:
+        // Create doctor profile.
+        custom_node_create($account->uid, $account->name, 'doctor', $full_name);
+        break;
+    }
+  }
+}
+
+/**
+ * Implements hook_user_load().
+ */
+function custom_user_load($users) {
+  foreach ($users as $uid => $account) {
+    // Load thumbnail if any.
+    if (isset($account->field_photo) and !empty($account->field_photo[LANGUAGE_NONE])) {
+      $users[$uid]->field_photo[LANGUAGE_NONE][0]['url'] = image_style_url('cut_480x480', $account->field_photo[LANGUAGE_NONE][0]['uri']);
+    }
+    
+    // Load profile.
+    if (!empty($account->field_account_type[LANGUAGE_NONE])) {
+      if ($account->field_account_type[LANGUAGE_NONE][0]['value'] == 0) {
+        $nid = db_query("SELECT nid FROM {node} WHERE type='customer' AND uid=:uid", [':uid' => $account->uid])->fetchColumn();
+      }
+      else {
+        if ($account->field_account_type[LANGUAGE_NONE][0]['value'] == 1) {
+          $nid = db_query("SELECT nid FROM {node} WHERE type='doctor' AND uid=:uid", [':uid' => $account->uid])->fetchColumn();
+        }
+      }
+      
+      if ($nid) {
+        $users[$uid]->profile = node_load($nid);
+      }
+      else {
+        // Create profile for this user.
+        if (empty($account->field_account_type[LANGUAGE_NONE])) {
+          $account->field_account_type[LANGUAGE_NONE][0]['value'] = 0;
+          $users[$uid]->field_account_type[LANGUAGE_NONE][0]['value'] = 0;
+        }
+        
+        $profile_type = $account->field_account_type[LANGUAGE_NONE][0]['value'] == 1 ? 'doctor' : 'customer';
+        $fullname = empty($account->field_full_name[LANGUAGE_NONE]) ? $account->name : $account->field_full_name[LANGUAGE_NONE][0]['value'];
+        
+        module_load_include('inc', 'custom', 'custom.helper');
+        $nid = custom_node_create($uid, $account->name, $profile_type, $fullname);
+        if ($nid) {
+          $users[$uid]->profile = node_load($nid);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_user_logout().
+ */
+function custom_user_logout($account) {
+  if (isset($account->roles[4]) or isset($account->roles[5])) {
+    module_load_include('inc', 'custom', 'custom');
+    custom_user_log_activity('Bạn đã ĐĂNG XUẤT khỏi hệ thống.', 'user');
+  }
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function custom_user_login(&$edit, $account) {
+  // Check profile completeness for Customer and Doctor.
+  if (!isset($account->roles[3]) and (isset($account->roles[4]) or isset($account->roles[5]))) {
+    // Get profile completeness to decide next step.
+    module_load_include('inc', 'custom', 'custom');
+    $user_profile_percentage = custom_user_profile_percentage($account);
+    
+    if ($user_profile_percentage < 100) {
+      drupal_set_message(t('Your profile is at %percentage%. Please fill all your profile fields to make it 100% completed.', ['%percentage' => $user_profile_percentage]), 'warning');
+      drupal_goto('user');
+    }
+  }
+}
+
+function custom_user_delete($account) {
+  module_load_include('inc', 'zalo', 'zalo');
+  $deleted = _zalo_delete_record($account->uid);
+  if (!$deleted) {
+    drupal_set_message(t("Cannot delete zalo id"), 'error');
+  }
+}
+
+/**
+ * Implements hook_uc_order().
+ */
+function custom_uc_order($op, $order, $arg2) {
+  switch ($op) {
+    case 'update':
+      //dsm($order);
+      //dsm($arg2);
+      // Sending notification when order status is changed.
+      if ($arg2 == 'pending' or $arg2 == 'canceled' or $arg2 == 'completed') {
+        $body_message = [
+          'canceled' => "Xin lỗi! Vì lý do khách quan Đơn hàng đã bị hủy bởi Người bán. Vui lòng chọn sản SP/DV khác.",
+          'pending' => "Đơn hàng đang được xử lý. Chúng tôi sẽ liên hệ tới bạn sớm.",
+          'completed' => "Đơn hàng đã hoàn thành. Cảm ơn bạn đã ủng hộ chúng tôi.",
+        ];
+        
+        if ($order->uid) {
+          $account = user_load($order->uid);
+          
+          $body_message[$arg2] .= '<br /><br />' . l('Xem lại đơn hàng', 'user/order/view/' . $order->order_id);
+          custom_node_create($order->uid, $account->name, 'notification_message', 'Cập nhật trạng thái đơn hàng', 1, $body_message[$arg2]);
+        }
+      }
+      
+      // Add points to buyer.
+      if ($order->order_status == 'pending' and ($arg2 == 'payment_received' or $arg2 == 'completed')) {
+        // Load the product to get point amount.
+        module_load_include('inc', 'custom', 'custom');
+        //$points = 0;
+        $uid = $order->uid;
+        
+        foreach ($order->products as $product_id => $product) {
+          // For video subscription.
+          if (in_array($product->model, [
+            'VIDEO_SILVER',
+            'VIDEO_GOLD',
+            'VIDEO_DIAMOND',
+          ])) {
+            switch ($product->model) {
+              case 'VIDEO_SILVER':
+                custom_video_subscription_add($uid, '+1 month');
+                break;
+              
+              case 'VIDEO_GOLD':
+                custom_video_subscription_add($uid, '+3 months');
+                break;
+              
+              case 'VIDEO_DIAMOND':
+                custom_video_subscription_add($uid, '+6 months');
+                break;
+            }
+            //$points += (int) $product->price;
+          }
+          else {
+            // Check for Course case.
+            $product_node = node_load($product->nid);
+            if ($product_node->type == 'course') {
+              // Generate a random code for this user to use.
+              $video_course_code = custom_user_password(16, 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789');
+              $order->products[$product_id]->field_video_course_code[LANGUAGE_NONE][0]['value'] = $video_course_code;
+              $order->order_status = 'completed';
+              uc_order_save($order);
+              
+              // Send this code to customer for using the course.
+              $account = user_load($order->uid);
+              drupal_mail('custom', 'custom_user_video_course_code', $order->primary_email, language_default(), [
+                'account' => $account,
+                'code' => $video_course_code,
+                'product' => $product_node,
+              ], variable_get('site_mail', 'giaidieu1999@gmail.com'));
+            }
+          }
+        }
+        
+        //dsm($points);
+        //custom_userpoints_add_points($uid, $points);
+      }
+      
+      break;
+    
+    case 'save':
+      $id = 'lich_hen_' . $order->uid;
+      if (!empty($_SESSION[$id])) {
+        $lich_hen = explode('-', $_SESSION[$id]);
+        $order->field_lich_hen = [
+          LANGUAGE_NONE => [
+            [
+              'value' => $lich_hen[2] . '-' . $lich_hen[1] . '-' . $lich_hen[0] . ' 00:00:00',
+              'timezone' => date_default_timezone(),
+              'timezone_db' => 'UTC',
+              'date_type' => 'datetime',
+            ],
+          ],
+        ];
+        unset($_SESSION[$id]);
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_menu_link_alter().
+ */
+function custom_menu_alter(&$items) {
+}
+
+/**
+ * Implements hook_cron().
+ */
+function custom_cron() {
+}
+
+/**
+ * Implements hook_user_view_alter().
+ */
+function custom_user_view_alter(&$build) {
+  if ($build['#view_mode'] == 'full') {
+    // Set page title.
+    $account_type = $build['field_account_type']['#items'][0]['value'] == 1 ? 'Bác sĩ' : 'Khách hàng';
+    drupal_set_title($account_type . ' ' . $build['field_full_name']['#items'][0]['value']);
+    
+    // Unset some fields.
+    unset($build['field_full_name']);
+    unset($build['field_account_type']);
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function custom_preprocess_page(&$vars) {
+  // Add template course page.
+  if (isset($vars['node']) and $vars['node']->type == 'course') {
+    $vars['theme_hook_suggestions'][] = 'page__course';
+    drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/khoa-hoc-node.css');
+    drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/khoa-hoc-node-1.css');
+    
+    drupal_add_js(drupal_get_path('theme', 'giaidieu') . '/js/course.js');
+    
+    // Get course subjects.
+    $vars['node']->course_subjects = count(views_get_view_result('node_functions', 'block_78', $vars['node']->nid));
+  }
+  
+  // Add CSS for teacher page.
+  if (isset($vars['node']) and $vars['node']->type == 'teacher') {
+    drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/teacher.css');
+    
+    drupal_set_title($vars['node']->field_teacher_title[LANGUAGE_NONE][0]['value'] . ' ' . $vars['node']->title);
+  }
+  
+  // User come to their own profile, otherwise come to view profile.
+  global $user;
+  if ($user->uid != 1) {
+    if (arg(0) == 'admin' && arg(1) == 'dashboard') {
+      //dsm($vars);
+      hide($vars['page']['content']['system_main']);
+    }
+  }
+  if (arg(0) == 'wishlist') {
+    $vars['theme_hook_suggestions'][] = 'page__user';
+  }
+  if ((arg(0) == 'user' and is_numeric(arg(1)) and !arg(2)) or (arg(0) == 'user' and !arg(1) and !$user->uid) or (arg(0) == 'user' and arg(1) == 'login')) {
+    $vars['theme_hook_suggestions'] = [];
+    $vars['theme_hook_suggestions'][] = 'page';
+  }
+  
+  if (arg(0) != 'admin') {
+    // Load CSS by pages.
+    if (drupal_is_front_page()) {
+      drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/trang-chu.css');
+    }
+    else {
+      if (arg(0) == 'node' and arg(1) == 4515 and !arg(2)) {
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/khoa-hoc.css');
+      }
+    }
+  }
+  
+  // dsm($vars);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function custom_theme($existing, $type, $theme, $path) {
+  return [
+    'custom__webrtc_page' => [
+      'path' => drupal_get_path('module', 'custom'),
+      'template' => 'templates/custom--webrtc-page',
+    ],
+    'views_view_field__admin_views_file__page_2__nothing' => [
+      'variables' => [
+        'view' => NULL,
+        'field' => NULL,
+        'row' => NULL,
+        'output' => NULL,
+      ],
+      'template' => 'views-view-field--admin-views-file--page-2--nothing',
+      'base hook' => 'views_view_field',
+      'path' => drupal_get_path('module', 'custom') . '/templates',
+    ],
+    'custom__project_landing' => [
+      'path' => drupal_get_path('module', 'custom'),
+      'template' => 'templates/custom--project-landing',
+    ],
+    'custom__product_add_on_popup' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--product-add-on-popup',
+    ],
+    'custom__video_subscription_popup' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--video-subscription-popup',
+    ],
+    'custom__video_course_popup' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--video-course-popup',
+    ],
+    'custom__user_settings' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--user-settings',
+    ],
+    'custom__profile_alert_popup' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--profile-alert-popup',
+    ],
+    'custom__order_view' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--order-view',
+    ],
+    'custom__product_combo_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--product-combo-form',
+    ],
+    'custom__product_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--product-form',
+    ],
+    'custom__video_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--video-form',
+    ],
+    'custom__service_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--service-form',
+    ],
+    'custom__login_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--login-form',
+    ],
+    'custom__register_form' => [
+      'variables' => ['cities' => NULL],
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--register-form',
+    ],
+    'custom__profile_form' => [
+      'variables' => ['account' => NULL],
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--profile-form',
+    ],
+    'custom__password_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--password-form',
+    ],
+    'custom__password_change_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--password-change-form',
+    ],
+    'custom__product_filter_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--product-filter-form',
+    ],
+    'custom__coupon_form' => [
+      'template' => drupal_get_path('theme', 'giaidieu') . '/templates/custom/custom--coupon-form',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function custom_node_insert($node) {
+  if (in_array($node->type, ['product', 'service', 'video'])) {
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function custom_node_update($node) {
+  if (in_array($node->type, ['product', 'service', 'video'])) {
+    $name = [
+      'product' => 'Sản phẩm',
+      'service' => 'Dịch vụ',
+      'video' => 'Video thày thuốc gia đình',
+    ];
+    
+    global $user;
+    module_load_include('inc', 'custom', 'custom');
+    $updateType = $node->created != $node->changed ? 'CẬP NHẬT' : 'TẠO';
+    $msg = '<a href="/' . drupal_get_path_alias('node/' . $node->nid) . '">' . strtoupper($user->name) . ' đã ' . $updateType . ' một ' . strtoupper($name[$node->type]) . ' có tên: "' . $node->title . '"</a>';
+    custom_user_log_activity($msg, 'content');
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function custom_node_delete($node) {
+  if (in_array($node->type, ['product', 'service', 'video'])) {
+    $name = [
+      'product' => 'Sản phẩm',
+      'service' => 'Dịch vụ',
+      'video' => 'Video thày thuốc gia đình',
+    ];
+    global $user;
+    module_load_include('inc', 'custom', 'custom');
+    custom_user_log_activity(strtoupper($user->name) . ' đã XÓA một ' . strtoupper($name[$node->type]) . ' có tên: "' . $node->title . '"', 'content');
+  }
+}
+
+/**
+ * Implements hook_node_load().
+ */
+function custom_node_load($nodes, $types) {
+  module_load_include('inc', 'custom', 'custom.helper');
+  
+  foreach ($nodes as $key => $node) {
+    // Course -> load teacher.
+    if ($node->type == 'course') {
+      if (!empty($node->field_course_teacher[LANGUAGE_NONE])) {
+        $nodes[$key]->field_course_teacher[LANGUAGE_NONE][0]['node'] = node_load($node->field_course_teacher[LANGUAGE_NONE][0]['target_id']);
+      }
+      
+      // Calculate save price.
+      if ($node->sell_price < $node->list_price) {
+        $nodes[$key]->save_price = $node->list_price - $node->sell_price;
+      }
+      
+      // Get star and statistics.
+      $nodes[$key]->votes = custom_get_votes_by_node_id($node->nid);
+    }
+    
+    if ($node->type == 'product' || $node->type == 'service') {
+      $nodes[$key]->user_description = '';
+      $supplier_uid = !empty($node->field_user) ? $node->field_user['und'][0]['target_id'] : $node->uid;
+      if ($intro_producrt_seller_uid = user_load($supplier_uid)) {
+        $intro_ncc = !empty($intro_producrt_seller_uid->field_user_description) ? $intro_producrt_seller_uid->field_user_description['und'][0]['value'] : '';
+        $nodes[$key]->user_description = $intro_ncc;
+      }
+    }
+    if ($node->type == 'article') {
+      if (!empty($node->field_news_category)) {
+        if ($news_cate = taxonomy_term_load($node->field_news_category['und'][0]['tid'])) {
+          $nodes[$key]->field_news_category_name = $news_cate->name;
+          //dsm($news_cate);
+        }
+      }
+    }
+    if ($node->type == 'video') {
+      $author = user_load($node->uid);
+      $nodes[$key]->field_full_name = !empty($author->field_full_name) ? $author->field_full_name['und'][0]['value'] : $author->name;
+      $nodes[$key]->field_photo = $author->field_photo;
+      $nodes[$key]->statistics = 0;
+      if ($cstatistic = statistics_get($node->nid)) {
+        $nodes[$key]->statistics = !empty($cstatistic['totalcount']) ? $cstatistic['totalcount'] : 0;
+      }
+      
+      // Check payment for user if livestreaming video is not free.
+      if (!empty($node->field_live_streaming[LANGUAGE_NONE]) and $node->field_live_streaming[LANGUAGE_NONE][0]['value'] == 1) {
+        $video_is_free = (!empty($node->field_free_mode[LANGUAGE_NONE]) and $node->field_free_mode[LANGUAGE_NONE][0]['value'] == 1) ? TRUE : FALSE;
+        $video_is_paid = FALSE;
+        
+        if (!$video_is_free) {
+          global $user;
+          $account = user_load($user->uid);
+          
+          if ($account->uid == $node->uid) {
+            // Video owner.
+            $video_is_free = TRUE;
+            $video_is_paid = TRUE;
+          }
+          else {
+            if (!empty($account->field_video_subscription_end[LANGUAGE_NONE]) and $account->field_video_subscription_end[LANGUAGE_NONE][0]['value'] > time()) {
+              $video_is_paid = TRUE;
+            }
+            
+            // Check whether this user has purchased this video.
+            if (!$video_is_paid) {
+              $result = views_get_view_result('uc_orders_user', 'block_1', $node->nid);
+              if (!empty($result)) {
+                $video_is_paid = TRUE;
+              }
+            }
+          }
+        }
+        
+        $nodes[$key]->livestreaming = [
+          'video_is_free' => $video_is_free,
+          'video_is_paid' => $video_is_paid,
+        ];
+        
+        // Send to jQuery for popup display if require payment.
+        if (!$video_is_free and !$video_is_paid) {
+          $data = [
+            'nid' => $node->nid,
+            'is_livestream' => TRUE,
+            //'video_id' => 'video-' . $nid . '-' . $video_id,
+            //'video_url' => $video_url,
+            //'video_cover' => $video_cover,
+            //'video_mime_type' => $video_mime_type,
+            'video_is_free' => $video_is_free,
+            // 'video_free_in_second' => $video_free_in_second,
+            'video_is_paid' => $video_is_paid,
+            'video_price' => $node->sell_price > 0 ? (int) $node->sell_price : 0,
+          ];
+          
+          $data['video_subscription_popup'] = theme('custom__video_subscription_popup', ['tasscare_settings' => $data]);
+          
+          drupal_add_js(['tasscare_settings' => ['video_livestreaming' => $data]], 'setting');
+        }
+      }
+      // End of live streaming payment.
+    }
+  }
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function custom_node_view($node, $view_mode, $langcode) {
+  if ($view_mode == 'full') {
+    // Add CSS file to each landing page / content type.
+    switch ($node->type) {
+      case 'notification':
+        global $user;
+        if (!$user->uid) {
+          drupal_access_denied();
+          exit;
+        }
+        
+        break;
+      
+      case 'notification_message':
+        global $user;
+        if ($user->uid != $node->uid) {
+          // Not allow other people to read this message.
+          drupal_goto('<front>');
+        }
+        else {
+          if (empty($node->field_is_read[LANGUAGE_NONE]) or $node->field_is_read[LANGUAGE_NONE][0]['value'] != 1) {
+            $node->field_is_read[LANGUAGE_NONE][0]['value'] = 1;
+            node_save($node);
+          }
+        }
+        
+        break;
+      
+      case 'video':
+        if ($node->field_live_streaming[LANGUAGE_NONE][0]['value']) {
+          drupal_add_js('https://www.gstatic.com/firebasejs/4.9.0/firebase.js', ['external' => TRUE]);
+          drupal_add_js(drupal_get_path('module', 'custom') . '/js/giaidieu_livestream.js');
+        }
+        
+        break;
+      
+      case 'video_subscription':
+        drupal_goto('<front>');
+        break;
+      
+      case 'landing_page':
+        $node_mapping = [
+          323 => 'thay-thuoc-gia-dinh.css',
+          324 => 've-chung-toi.css',
+          325 => 'dich-vu.css',
+          326 => 'san-pham.css',
+          327 => 'khach-hang.css',
+          328 => 'tin-tuc.css',
+        ];
+        
+        if (isset($node_mapping[$node->nid])) {
+          //drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/' . $node_mapping[$node->nid]);
+          drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/' . $node_mapping[$node->nid] . '.less');
+        }
+        
+        break;
+      
+      case 'service':
+        // Go back to parent product if any.
+        if (!empty($node->field_parent_nid[LANGUAGE_NONE]) and $node->field_parent_nid[LANGUAGE_NONE][0]['value'] > 0) {
+          drupal_goto('node/' . $node->field_parent_nid[LANGUAGE_NONE][0]['value']);
+          exit;
+        }
+        
+        // Embed product addons popup.
+        module_load_include('inc', 'custom', 'custom');
+        custom_product_addon_embed($node);
+        
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/dich-vu.css.less');
+        
+        break;
+      
+      case 'product':
+        // Go back to parent product if any.
+        if (!empty($node->field_parent_nid[LANGUAGE_NONE]) and $node->field_parent_nid[LANGUAGE_NONE][0]['value'] > 0) {
+          drupal_goto('node/' . $node->field_parent_nid[LANGUAGE_NONE][0]['value']);
+          exit;
+        }
+        
+        // Embed product addons popup.
+        module_load_include('inc', 'custom', 'custom');
+        custom_product_addon_embed($node);
+        
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/san-pham.css.less');
+        
+        break;
+      
+      case 'customer_talk_about_us':
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/khach-hang.css.less');
+        break;
+      
+      case 'webform':
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/lien-he.css.less');
+        break;
+      
+      case 'family_doctor_video':
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/thay-thuoc-gia-dinh.css.less');
+        break;
+      
+      case 'article':
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/css/tin-tuc.css');
+        drupal_add_css(drupal_get_path('theme', 'giaidieu') . '/less/tin-tuc.css.less');
+        break;
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function custom_preprocess_node(&$vars) {
+}
+
+/**
+ * Implement hook_form_alter().
+ */
+function custom_form_alter(&$form, $form_state, $form_id) {
+  global $user;
+  // dsm($form_id);
+  
+  switch ($form_id) {
+    case 'uc_order_view_update_form':
+      $form['controls']['status']['#options']['completed'] = 'Đơn Hàng Đã Hoàn Thành';
+      $form['controls']['status']['#options']['pending'] = 'Đơn Hàng Đang Chờ Xử Lý';
+      $form['controls']['status']['#options']['canceled'] = 'Đơn Hàng Đã Bị Hủy Bởi Người Bán';
+      $form['controls']['status']['#options']['processing'] = 'Đơn Hàng Đang Được Xử Lý';
+      break;
+    
+    case 'simplenews_block_form_178':
+      $form['mail']['#title'] = '';
+      $form['mail']['#attributes'] = ['placeholder' => 'Nhập E-mail Của Bạn'];
+      break;
+    
+    case 'block_admin_configure':
+      if ($user->uid != 1) {
+        hide($form['regions']);
+        hide($form['visibility']);
+        hide($form['settings']['css_class']);
+      }
+      //dsm($form);
+      break;
+    
+    case 'webform_client_form_1510':
+      array_unshift($form['#submit'], 'custom_lich_hen_save');
+      $form['actions']['dismiss'] = [
+        '#type' => 'submit',
+        '#value' => t("Dismiss"),
+        '#weight' => 2,
+      ];
+      $form['submitted']['khu_vuc']['#empty_option'] = t("Nationwide");
+      break;
+    
+    case 'article_node_form':
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/custom.admin.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.file.js';
+      
+      $form['nid'] = [
+        '#type' => 'hidden',
+        '#value' => is_numeric(arg(1)) ? arg(1) : 0,
+      ];
+      
+      $form['fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['custom_image_field'] = [
+        '#type' => 'hidden',
+        '#value' => 1,
+      ];
+      
+      $form['#submit'][] = '_custom_node_form_article_image_submit';
+      
+      break;
+    
+    case 'product_node_form':
+      /*$form['base']['prices']['sell_price']['#weight'] = 0;
+      $form['base']['prices']['list_price']['#weight'] = 3;*/
+      $form['#prefix'] = '<div id="product-service-form-wrapper">';
+      $form['#suffix'] = '</div>';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/custom.admin.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.file.js';
+      hide($form['field_intro_product_seller']);
+      
+      $form['nid'] = [
+        '#type' => 'hidden',
+        '#value' => is_numeric(arg(1)) ? arg(1) : 0,
+      ];
+      
+      $form['fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['custom_image_field'] = [
+        '#type' => 'hidden',
+        '#value' => 1,
+      ];
+      
+      $form['#submit'][] = '_custom_node_form_image_submit';
+      
+      break;
+    
+    case 'service_node_form':
+      /*$form['base']['prices']['sell_price']['#weight'] = 0;
+      $form['base']['prices']['list_price']['#weight'] = 3;*/
+      $form['#prefix'] = '<div id="product-service-form-wrapper">';
+      $form['#suffix'] = '</div>';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/custom.admin.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.file.js';
+      
+      hide($form['field_intro_product_seller']);
+      hide($form['field_intro_doctor']);
+      
+      $form['nid'] = [
+        '#type' => 'hidden',
+        '#value' => is_numeric(arg(1)) ? arg(1) : 0,
+      ];
+      
+      $form['fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['custom_image_field'] = [
+        '#type' => 'hidden',
+        '#value' => 1,
+      ];
+      
+      $form['#submit'][] = '_custom_node_form_image_submit';
+      
+      break;
+    
+    case 'combo_node_form':
+      $form['base']['prices']['list_price']['#title'] = t("Original price");
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/custom.admin.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.file.js';
+      
+      $form['nid'] = [
+        '#type' => 'hidden',
+        '#value' => is_numeric(arg(1)) ? arg(1) : 0,
+      ];
+      
+      $form['fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['custom_image_field'] = [
+        '#type' => 'hidden',
+        '#value' => 1,
+      ];
+      
+      $form['#submit'][] = '_custom_node_form_image_submit';
+      
+      break;
+    
+    case 'views_exposed_form':
+      if ($form['#id'] == 'views-exposed-form-search-content-page') {
+        drupal_add_library('system', 'ui.slider');
+      }
+      break;
+    
+    case 'video_node_form':
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/custom.admin.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.video.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.file.js';
+      
+      $form['nid'] = [
+        '#type' => 'hidden',
+        '#value' => is_numeric(arg(1)) ? arg(1) : 0,
+      ];
+      
+      $form['video_fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['video_thumbnail_fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['video_adv_fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['video_adv_thumbnail_fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['custom_video_field'] = [
+        '#type' => 'hidden',
+        '#value' => 1,
+      ];
+      
+      $form['#submit'][] = '_custom_node_form_video_submit';
+      
+      break;
+    
+    case 'course_node_form':
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/custom.admin.js';
+      $form['#attached']['js'][] = drupal_get_path('module', 'custom') . '/js/giaidieu.file.js';
+      
+      $form['nid'] = [
+        '#type' => 'hidden',
+        '#value' => is_numeric(arg(1)) ? arg(1) : 0,
+      ];
+      
+      $form['fid'] = [
+        '#type' => 'hidden',
+        '#value' => '',
+      ];
+      
+      $form['custom_image_field'] = [
+        '#type' => 'hidden',
+        '#value' => 1,
+      ];
+      
+      $form['#submit'][] = '_custom_node_form_article_image_submit';
+      
+      break;
+    
+    case 'user_login':
+      break;
+    
+    case 'user_register_form':
+      break;
+    
+    case 'user_pass':
+      $form['modal_header'] = [
+        '#markup' => '<div class="modal-header">' . $form['actions']['submit']['#value'] . '</div>',
+        '#weight' => -1,
+      ];
+      $form['name']['#attributes'] = ['placeholder' => t("Email hoặc SĐT")];
+      $form['pass']['#attributes'] = ['placeholder' => t("Password")];
+      
+      //dsm($form);
+      break;
+    
+    case 'uc_cart_checkout_form':
+      // Address default value.
+      if ($user->uid) {
+        $account = user_load($user->uid);
+        $full_name = !empty($account->field_full_name) ? $account->field_full_name['und'][0]['value'] : '';
+        $address = !empty($account->profile->field_address) ? $account->profile->field_address['und'][0]['value'] : '';
+        $city = !empty($account->field_cities) ? taxonomy_term_load($account->field_cities['und'][0]['tid'])->name : '';
+        $mobile = !empty($account->field_mobile_number) ? $account->field_mobile_number['und'][0]['value'] : '';
+      }
+      else {
+        if (isset($_SESSION['app_customer_details']) and !empty($_SESSION['app_customer_details'])) {
+          $full_name = isset($_SESSION['app_customer_details']['fullname']) ? $_SESSION['app_customer_details']['fullname'] : '';
+          $mobile = isset($_SESSION['app_customer_details']['mobile']) ? $_SESSION['app_customer_details']['mobile'] : '';
+          $email = isset($_SESSION['app_customer_details']['email']) ? $_SESSION['app_customer_details']['email'] : '';
+          $address = isset($_SESSION['app_customer_details']['address']) ? $_SESSION['app_customer_details']['address'] : '';
+          $message = isset($_SESSION['app_customer_details']['message']) ? $_SESSION['app_customer_details']['message'] : '';
+          $payment_method = isset($_SESSION['app_customer_details']['payment_method']) ? $_SESSION['app_customer_details']['payment_method'] : '';
+          
+          if (isset($_SESSION['app_customer_details']['city']) and $_SESSION['app_customer_details']['city'] > 0) {
+            $term = taxonomy_term_load($_SESSION['app_customer_details']['city']);
+            $city = is_object($term) ? $term->name : '';
+          }
+          
+          // Customer pane.
+          if (!empty($form['panes']['customer'])) {
+            $form['panes']['customer']['primary_email']['#default_value'] = $_SESSION['app_customer_details']['email'];
+          }
+          
+          unset($_SESSION['app_customer_details']);
+          $_SESSION['app_order'] = TRUE;
+          
+          // Add header for App.
+          $form['panes']['header'] = [
+            '#markup' => '<div id="header-wrapper"><div onclick="javascript:window.location.href=\'about:blank\';" class="system-close icon-header icon-header-left"><img src="/sites/all/themes/giaidieu/images/app/close.svg" alt="" /></div><div class="page-title"><img src="/sites/all/themes/giaidieu/images/app/logo_app.svg" alt="" /></div></div>',
+            '#weight' => -50,
+          ];
+          
+          // Add a signal for jQuery process later.
+          $payment_methods = [
+            0 => 'cod',
+            1 => 'nganluong_debitcard',
+            2 => 'nganluong_ibanking',
+          ];
+          
+          if (!isset($payment_methods[$payment_method])) {
+            $payment_methods[$payment_method] = 'cod';
+          }
+          
+          drupal_add_js([
+            'app_order' => TRUE,
+            'payment_method' => $payment_methods[$payment_method],
+          ], 'setting');
+        }
+      }
+      
+      // Delivery address
+      if (!empty($form['panes']['delivery'])) {
+        if (!empty($full_name)) {
+          $form['panes']['delivery']['address']['#default_value']->delivery_first_name = $full_name;
+        }
+        if (!empty($mobile)) {
+          $form['panes']['delivery']['address']['#default_value']->delivery_phone = $mobile;
+        }
+        if (!empty($address)) {
+          $form['panes']['delivery']['address']['#default_value']->delivery_street1 = $address;
+        }
+        if (!empty($city)) {
+          $form['panes']['delivery']['address']['#default_value']->delivery_city = $city;
+        }
+      }
+      
+      // Billing address
+      if (!empty($form['panes']['billing'])) {
+        if (!empty($full_name)) {
+          $form['panes']['billing']['address']['#default_value']->billing_first_name = $full_name;
+        }
+        if (!empty($mobile)) {
+          $form['panes']['billing']['address']['#default_value']->billing_phone = $mobile;
+        }
+        if (!empty($address)) {
+          $form['panes']['billing']['address']['#default_value']->billing_street1 = $address;
+        }
+        if (!empty($city)) {
+          $form['panes']['billing']['address']['#default_value']->billing_city = $city;
+        }
+      }
+      
+      // Payment method pane. Set default payment method.
+      /*
+      if (isset($payment_method) and $payment_method >= 0) {
+        $payment_methods = array(
+          0 => 'cod',
+          1 => 'nganluong_debitcard',
+          2 => 'nganluong_ibanking',
+        );
+        
+        $form['panes']['payment']['payment_method']['#default_value'] = $payment_methods[$payment_method];
+      }
+      */
+      
+      // Comment pane.
+      if (!empty($form['panes']['comments']) and isset($message) and $message != '') {
+        $form['panes']['comments']['comments']['#default_value'] = $message;
+      }
+      
+      break;
+    
+    case 'uc_order_edit_form':
+      // dsm($form);
+      break;
+    
+    case 'uc_cart_view_form':
+      // dsm($form);
+      unset($form['#attached']['css'][0]);
+      if (empty($form['#attributes']['class'])) {
+        $form['#attributes'] = ['class' => ['dh-block-cart-checkout']];
+      }
+      else {
+        $form['#attributes']['class'][] = 'dh-block-cart-checkout';
+      }
+      
+      $form['items']['#prefix'] = '<h2 class="block-title">Giỏ hàng của bạn</h2>';
+      $form['items']['#columns']['model'] = [
+        'cell' => t("Model"),
+        'weight' => 2,
+      ];
+      $form['items']['#columns']['remove']['weight'] = 3.1;
+      $form['items']['#columns']['single'] = [
+        'cell' => 'Đơn giá',
+        'weight' => 3.2,
+      ];
+      $form['items']['#columns']['qty']['cell'] = t("Quantity");
+      unset($form['items']['#columns']['desc']);
+      
+      $cart_content = uc_cart_get_contents();
+      // dsm($cart_content);
+      // $has_service = false;
+      $i = 0;
+      // dsm($form);
+      foreach ($cart_content as $key => $item) {
+        // dsm($item);
+        if ($item->module == 'uc_coupon') {
+          $coupon = uc_coupon_find($item->data['code']);
+          if ($coupon->type == 'percentage') {
+            $form['items'][$i]['desc']['#markup'] .= ' (' . round($coupon->value) . '%)';
+          }
+        }
+        if (!empty($item->sell_price)) {
+          $form['items'][$i]['single'] = [
+            '#theme' => 'uc_price',
+            '#price' => $item->sell_price,
+            '#cell_attributes' => [
+              'class' => ['pro-price'],
+              'data-price' => $item->sell_price,
+            ],
+          ];
+        }
+        $form['items'][$i]['model'] = ['#markup' => $item->model];
+        $img = (!empty($item->uc_product_image)) ? '<img src="' . image_style_url('scale_370x330', $item->uc_product_image['und'][0]['uri']) . '">' : '';
+        $form['items'][$i]['image'] = [
+          '#markup' => $img . $form['items'][$i]['desc']['#markup'],
+          '#cell_attributes' => ['class' => ['cart-pro-item']],
+        ];
+        $i++;
+      }
+      $total = $form['items'][count($cart_content)];
+      $form['items'][count($cart_content)]['total']['#cell_attributes']['class'][0] = 'hide';
+      //Form action
+      $form['actions']['#attributes'] = ['class' => ['cart-action']];
+      $form['actions']['continue_shopping']['#markup'] = '<a href="/" class="btn btn-orange">' . t("Continue shopping") . '</a>';
+      $form['actions']['update']['#attributes'] = ['class' => ['btn btn-orange']];
+      $form['actions']['empty']['#attributes'] = ['class' => ['btn dh-btn-orange-reverse']];
+      $form['actions']['checkout']['checkout']['#attributes'] = [
+        'class' => [
+          'hide',
+          'submit-checkout',
+        ],
+      ];
+      
+      $form['actions']['#suffix'] = '<div class="cart-summary">
+          <table>
+            <tr>
+              <td>' . t("Tạm tính") . '</td>
+              <td>' . uc_currency_format($total['total']['#price']) . '</td>
+            </tr>
+            <tr>
+              <td>' . t("Phí vận chuyển") . '</td>
+              <td>' . t("Miễn phí") . '</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <input type="text" placeholder="' . t("Nhập Mã Giảm Giá") . '" id="coupon-code" data-href="#uc-coupon-form">
+                <a type="submit" class="btn btn-primary js-action" data-href="#uc-coupon-form .form-submit">Áp dụng</a>
+              </td>
+            </tr>
+            <tr>
+              <td>' . t("Tổng tiền thanh toán") . '</td>
+              <td>' . uc_currency_format($total['total']['#price']) . '</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="commerce-line-item-actions">
+          <a data-href="#edit-actions .submit-checkout" class="btn btn-primary js-action">' . t("Thanh toán") . '</a>
+        </div>';
+      
+      break;
+    
+    case 'system_site_maintenance_mode':
+      $format = 'Y-m-d H:i';
+      $date = variable_get('open_time', date($format));
+      $form['open_time'] = [
+        '#type' => 'date_select',
+        '#title' => t("Open time"),
+        '#date_increment' => 15,
+        '#default_value' => $date,
+        '#date_format' => $format,
+        '#date_year_range' => '0:+3',
+      ];
+      
+      break;
+    
+    case 'webform_client_form_477':
+      $form['actions']['submit']['#value'] = 'Đặt lịch hẹn';
+      $form['actions']['submit']['#attributes']['class'][] = 'btn-primary';
+      
+      break;
+    
+    case 'page_node_form':
+      if ($form['nid']['#value'] == 467 && $user->uid != 1) {
+        hide($form['revision_information']);
+        hide($form['comment_settings']);
+        hide($form['author']);
+        hide($form['options']);
+        $form['#node']->menu['access'] = FALSE;
+      }
+      break;
+  }
+}
+
+/**
+ * Process to upload video.
+ */
+function _custom_node_form_video_submit($form, &$form_state) {
+  $form_state['values']['field_video'][LANGUAGE_NONE] = [];
+  
+  if ($form_state['input']['video_fid'] > 0) {
+    $form_state['values']['field_video'][LANGUAGE_NONE][0] = [
+      'fid' => $form_state['input']['video_fid'],
+      'display' => 1,
+    ];
+    
+    if ($form_state['input']['video_thumbnail_fid'] > 0) {
+      $form_state['values']['field_video'][LANGUAGE_NONE][0]['thumbnail'] = $form_state['input']['video_thumbnail_fid'];
+    }
+  }
+  
+  if ($form_state['input']['video_adv_fid'] > 0) {
+    $form_state['values']['field_video_adv'][LANGUAGE_NONE][0] = [
+      'fid' => $form_state['input']['video_adv_fid'],
+      'display' => 1,
+    ];
+    
+    if ($form_state['input']['video_adv_thumbnail_fid'] > 0) {
+      $form_state['values']['field_video_adv'][LANGUAGE_NONE][0]['thumbnail'] = $form_state['input']['video_adv_thumbnail_fid'];
+    }
+  }
+  
+  // Update video duration.
+  if ($form_state['input']['video_fid'] > 0) {
+    $video_file = file_load($form_state['input']['video_fid']);
+    
+    if ($video_file) {
+      $videoPath = drupal_realpath($video_file->uri);
+      
+      $cmd = "ffprobe -i $videoPath -show_entries format=duration -v quiet -of csv='p=0'";
+      //dsm($cmd);
+      
+      exec($cmd, $output, $return_var);
+      //dsm($output);
+      
+      $sec = (int) floor($output[0]);
+      $video_duration = gmdate('H:i:s', $sec);
+      $form_state['values']['field_video_duration'][LANGUAGE_NONE][0]['value'] = $video_duration;
+    }
+  }
+  else {
+    if (!empty($form_state['values']['field_video_youtube'][LANGUAGE_NONE])) {
+      $video_id = $form_state['values']['field_video_youtube'][LANGUAGE_NONE][0]['video_id'];
+      
+      if ($video_id) {
+        $video_duration = custom_get_youtube_video_length($video_id);
+        $form_state['values']['field_video_duration'][LANGUAGE_NONE][0]['value'] = $video_duration;
+      }
+    }
+  }
+  
+  //dsm($form_state['values']);
+  //dsm($form_state['input']);
+}
+
+/**
+ * Process to upload images.
+ */
+function _custom_node_form_image_submit($form, &$form_state) {
+  //dsm($form_state);
+  
+  // Process image fields.
+  // Remove all.
+  $form_state['values']['uc_product_image'][LANGUAGE_NONE] = [];
+  $fids = preg_split('/\,/', $form_state['input']['fid']);
+  if (count($fids) > 0) {
+    for ($i = 0; $i < count($fids); $i++) {
+      $form_state['values']['uc_product_image'][LANGUAGE_NONE][] = [
+        'display' => 1,
+        'fid' => $fids[$i],
+      ];
+    }
+  }
+}
+
+/**
+ * Process to upload images.
+ */
+function _custom_node_form_article_image_submit($form, &$form_state) {
+  //dsm($form_state);
+  
+  // Process image fields.
+  // Remove all.
+  $form_state['values']['field_images'][LANGUAGE_NONE] = [];
+  $fids = preg_split('/\,/', $form_state['input']['fid']);
+  if (count($fids) > 0) {
+    for ($i = 0; $i < count($fids); $i++) {
+      $form_state['values']['field_images'][LANGUAGE_NONE][] = [
+        'display' => 1,
+        'fid' => $fids[$i],
+      ];
+    }
+  }
+}
+
+function custom_lich_hen_save($form, &$form_state) {
+  if ($form_state['values']['form_id'] == 'webform_client_form_1510') {
+    $_SESSION['suggestions_1510'] = TRUE;
+  }
+  
+  if (!empty($form_state['input']['field_lich_hen'])) {
+    global $user;
+    $id = 'lich_hen_' . $user->uid;
+    $_SESSION[$id] = $form_state['input']['field_lich_hen'];
+  }
+}
+
+/**
+ * Implements hook_uc_checkout_complete().
+ */
+function custom_uc_checkout_complete($order, $account) {
+  if (!empty($account->field_mobile_number) || !empty($order->delivery_phone)) {
+    $number = !empty($order->delivery_phone) ? $order->delivery_phone : $account->field_mobile_number['und'][0]['value'];
+    $message = variable_get('notification_order_complete', '');
+    $message = token_replace($message, [
+      'uc_order' => $order,
+      'user' => $account,
+    ]);
+    if (!empty($message)) {
+      $result = esms_send_message($message, $number);
+    }
+  }
+  $id = 'lich_hen_' . $order->uid;
+  if (isset($_SESSION[$id])) {
+    unset($_SESSION[$id]);
+  }
+  
+  // Detect mobile app then return the singal for handling.
+  if (isset($_SESSION['app_order']) and $_SESSION['app_order']) {
+    // Redirect to mobile page for order complete.
+    unset($_SESSION['app_order']);
+    drupal_goto('products-to-payment-complete/' . $order->order_id);
+    exit;
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function custom_mail($key, &$message, $params) {
+  module_load_include('inc', 'custom', 'custom.mail');
+  custom_mail_get_message($key, $message, $params);
+}
+
+/**
+ * Implements hook_mail_alter().
+ */
+function custom_mail_alter(&$message) {
+  switch ($message['id']) {
+    // Stop sending email for this.
+    case 'user_register_no_approval_required':
+      $message['send'] = FALSE;
+      //dsm($message);
+      break;
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function custom_block_info() {
+  $blocks = [];
+  
+  $blocks['pro_service_cate_tab'] = [
+    'info' => t('Product, service category tab'),
+  ];
+  $blocks['why_choose_us'] = [
+    'info' => "Tại Sao Chọn Chúng Tôi?",
+  ];
+  $blocks['intro_front'] = [
+    'info' => "Tasscare giới thiệu (trang chủ)",
+  ];
+  $blocks['front_statistics'] = [
+    'info' => "Thống Kê Của TassCare",
+  ];
+  $blocks['custom_product_filter_form'] = [
+    'info' => "Tìm Kiếm",
+  ];
+  $blocks['custom_service_best_seller'] = [
+    'info' => t("Service best seller"),
+  ];
+  
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function custom_block_configure($delta = '') {
+  // This example comes from node.module.
+  global $language;
+  $var_key = $delta . '_' . $language->language;
+  $form = [];
+  switch ($delta) {
+    case 'why_choose_us':
+      $intData = [
+        'line1' => t("Tại Sao Chọn Chúng Tôi?"),
+        'line2' => t("3 Lý Do Tốt Nhất"),
+        'hotline' => t("0888.56.16.26"),
+        'image' => 0,
+        'list_number' => 3,
+        'list' => [
+          [
+            'title' => "An toàn bệnh nhân",
+            'body' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+            'post' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+          ],
+          [
+            'title' => "Bác sĩ chuyên gia",
+            'body' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+            'post' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+          ],
+          [
+            'title' => "Số năm kinh nghiệm",
+            'body' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+            'post' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+          ],
+        ],
+      ];
+      $data = unserialize(variable_get($var_key, serialize($intData)));
+      $form['block_content'] = [
+        '#type' => 'fieldset',
+        '#title' => t('Block content'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+      ];
+      $form['block_content']['line1'] = [
+        '#type' => 'textfield',
+        '#title' => t('Heading first'),
+        '#default_value' => $data['line1'],
+        '#size' => 60,
+        '#maxlength' => 128,
+      ];
+      $form['block_content']['line2'] = [
+        '#type' => 'textfield',
+        '#title' => t('Heading second'),
+        '#default_value' => $data['line2'],
+        '#size' => 60,
+        '#maxlength' => 128,
+      ];
+      $form['block_content']['hotline'] = [
+        '#type' => 'textfield',
+        '#title' => t('Hotline'),
+        '#default_value' => $data['hotline'],
+        '#size' => 60,
+        '#maxlength' => 128,
+      ];
+      $form['block_content']['hotline'] = [
+        '#type' => 'textfield',
+        '#title' => t('Hotline'),
+        '#default_value' => $data['hotline'],
+        '#size' => 60,
+        '#maxlength' => 128,
+      ];
+      $form['block_content']['image'] = [
+        '#type' => 'managed_file',
+        '#title' => t('Image'),
+        '#default_value' => $data['image'],
+        '#upload_location' => 'public://custom_block/',
+      ];
+      $form['block_content']['list_number'] = [
+        '#type' => 'hidden',
+        '#title' => t('Number of line text'),
+        '#default_value' => $data['list_number'],
+        '#required' => TRUE,
+        '#size' => 10,
+      ];
+      if ($data['list_number'] > 0) {
+        $form['block_content']['list_text'] = [
+          '#type' => 'fieldset',
+          '#title' => t('List text'),
+          '#collapsible' => TRUE,
+          '#collapsed' => FALSE,
+        ];
+        for ($i = 0; $i < $data['list_number']; $i++) {
+          $form['block_content']['list_text'][$i] = [
+            '#type' => 'fieldset',
+            '#title' => t('Text @i', ['@i' => $i + 1]),
+            '#collapsible' => TRUE,
+            '#collapsed' => FALSE,
+          ];
+          $title_key = 'title_' . $i;
+          $form['block_content']['list_text'][$i][$title_key] = [
+            '#type' => 'textfield',
+            '#title' => t('Title'),
+            '#default_value' => (!empty($data['list'][$i]['title'])) ? $data['list'][$i]['title'] : '',
+            '#size' => 60,
+            '#maxlength' => 128,
+          ];
+          $body_key = 'body_' . $i;
+          $form['block_content']['list_text'][$i][$body_key] = [
+            '#type' => 'textarea',
+            '#title' => t('Summary'),
+            '#default_value' => (!empty($data['list'][$i]['body'])) ? $data['list'][$i]['body'] : '',
+          ];
+          $post_key = 'post_' . $i;
+          $form['block_content']['list_text'][$i][$post_key] = [
+            '#type' => 'text_format',
+            '#title' => t('Body'),
+            '#default_value' => (!empty($data['list'][$i]['post'])) ? $data['list'][$i]['post'] : '',
+            '#format' => 'editor',
+            '#weight' => 0,
+            '#required' => TRUE,
+            '#rows' => 20,
+          ];
+        }
+      }
+      break;
+    case 'intro_front':
+      $intData = [
+        'list_number' => 3,
+        'list' => [
+          [
+            'title' => "Sứ mệnh",
+            'image' => 0,
+            'summary' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+            'body' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+          ],
+          [
+            'title' => "Tầm nhìn",
+            'image' => 0,
+            'summary' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+            'body' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+          ],
+          [
+            'title' => "Giá trị cốt lõi",
+            'image' => 0,
+            'summary' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+            'body' => "Maecenas pulvinar laoreet est a fringilla. Nunc rutrum sit amet nisl a pulvinar. Duis posuere dapibus quam, porta elementum arcu.",
+          ],
+        ],
+      ];
+      $data = unserialize(variable_get($var_key, serialize($intData)));
+      $form['block_content'] = [
+        '#type' => 'fieldset',
+        '#title' => t('Block content'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+      ];
+      $form['block_content']['list_number'] = [
+        '#type' => 'hidden',
+        '#title' => t('Number of line text'),
+        '#default_value' => $data['list_number'],
+        '#required' => TRUE,
+        '#size' => 10,
+      ];
+      if ($data['list_number'] > 0) {
+        $form['block_content']['list_text'] = [
+          '#type' => 'fieldset',
+          '#title' => t('List text'),
+          '#collapsible' => TRUE,
+          '#collapsed' => FALSE,
+        ];
+        for ($i = 0; $i < $data['list_number']; $i++) {
+          $form['block_content']['list_text'][$i] = [
+            '#type' => 'fieldset',
+            '#title' => t('Text @i', ['@i' => $i + 1]),
+            '#collapsible' => TRUE,
+            '#collapsed' => FALSE,
+          ];
+          $title_key = 'title_' . $i;
+          $form['block_content']['list_text'][$i][$title_key] = [
+            '#type' => 'textfield',
+            '#title' => t('Title'),
+            '#default_value' => $data['list'][$i]['title'],
+            '#size' => 60,
+            '#maxlength' => 128,
+          ];
+          $summary_key = 'summary_' . $i;
+          $form['block_content']['list_text'][$i][$summary_key] = [
+            '#type' => 'textarea',
+            '#title' => t('Summary'),
+            '#default_value' => $data['list'][$i]['summary'],
+          ];
+          $body_key = 'body_' . $i;
+          $form['block_content']['list_text'][$i][$body_key] = [
+            '#type' => 'text_format',
+            '#title' => t('Body'),
+            '#default_value' => $data['list'][$i]['body'],
+            '#format' => 'editor',
+            '#rows' => 15,
+          ];
+          $img_key = 'img_' . $i;
+          $form['block_content']['list_text'][$i][$img_key] = [
+            '#type' => 'managed_file',
+            '#title' => t('Image'),
+            '#default_value' => $data['list'][$i]['image'],
+            '#upload_location' => 'public://custom_block/',
+            // '#required' => TRUE,
+          ];
+          
+        }
+      }
+      
+      break;
+    case 'front_statistics':
+      $intData = [
+        'lang_title' => '',
+        'subtitle' => '',
+        'background' => 0,
+        'line' => [
+          [
+            'title' => 'Bác Sĩ',
+            'icon' => 0,
+            'number' => 9,
+          ],
+          [
+            'title' => 'Chi Nhánh Y Tế',
+            'icon' => 0,
+            'number' => 4,
+          ],
+          [
+            'title' => 'Phẫu Thuật Thành Công',
+            'icon' => 0,
+            'number' => 1600,
+          ],
+        ],
+      ];
+      
+      $data = unserialize(variable_get($var_key, serialize($intData)));
+      $form['block_content'] = [
+        '#type' => 'fieldset',
+        '#title' => t('Block content'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+      ];
+      
+      $form['block_content']['lang_title'] = [
+        '#type' => 'textfield',
+        '#lang_title' => t('Title'),
+        '#default_value' => !empty($data['lang_title']) ? $data['lang_title'] : '',
+      ];
+      
+      $form['block_content']['subtitle'] = [
+        '#type' => 'textarea',
+        '#title' => t('Subtitle'),
+        '#default_value' => !empty($data['subtitle']) ? $data['subtitle'] : '',
+      ];
+      
+      $form['block_content']['background'] = [
+        '#type' => 'managed_file',
+        '#title' => t('Background'),
+        '#default_value' => $data['background'],
+        '#upload_location' => 'public://custom_block/',
+      ];
+      for ($i = 0; $i < 3; $i++) {
+        //Line 1
+        $form['block_content']['line' . $i] = [
+          '#type' => 'fieldset',
+          '#title' => t('Statistic ' . ($i + 1)),
+          '#collapsible' => TRUE,
+          '#collapsed' => FALSE,
+        ];
+        $form['block_content']['line' . $i]['title' . $i] = [
+          '#type' => 'textfield',
+          '#required' => TRUE,
+          '#title' => t('Title'),
+          '#default_value' => $data['line'][$i]['title'],
+          '#size' => 60,
+          '#maxlength' => 128,
+        ];
+        $form['block_content']['line' . $i]['icon' . $i] = [
+          '#type' => 'managed_file',
+          '#title' => t('Icon'),
+          '#default_value' => $data['line'][$i]['icon'],
+          '#upload_location' => 'public://custom_block/',
+        ];
+        $form['block_content']['line' . $i]['number' . $i] = [
+          '#type' => 'textfield',
+          '#required' => TRUE,
+          '#title' => t('Number'),
+          '#default_value' => $data['line'][$i]['number'],
+          '#size' => 60,
+          '#maxlength' => 128,
+        ];
+      }
+      break;
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function custom_block_save($delta = '', $edit = []) {
+  global $user;
+  global $language;
+  $var_key = $delta . '_' . $language->language;
+  switch ($delta) {
+    case 'why_choose_us':
+      if (!empty($edit['image'])) {
+        if ($file = file_load($edit['image'])) {
+          $file->status = FILE_STATUS_PERMANENT;
+          file_save($file);
+          file_usage_add($file, 'user', 'user', $user->uid);
+          $edit['image'] = $file->fid;
+        }
+        else {
+          $edit['image'] = 0;
+        }
+      }
+      $list = [];
+      if ($edit['list_number'] > 0) {
+        for ($i = 0; $i < $edit['list_number']; $i++) {
+          $title_key = 'title_' . $i;
+          $body_key = 'body_' . $i;
+          $post_key = 'post_' . $i;
+          if (!empty($edit[$title_key]) || !empty($edit[$body_key]) || !empty($edit[$post_key])) {
+            $list[] = [
+              'title' => (!empty($edit[$title_key])) ? $edit[$title_key] : '',
+              'body' => (!empty($edit[$body_key])) ? $edit[$body_key] : '',
+              'post' => (!empty($edit[$post_key])) ? $edit[$post_key]['value'] : '',
+            ];
+          }
+        }
+      }
+      $intData = [
+        'line1' => t($edit['line1']),
+        'line2' => t($edit['line2']),
+        'hotline' => t($edit['hotline']),
+        'image' => $edit['image'],
+        'list_number' => count($list),
+        'list' => $list,
+      ];
+      variable_set($var_key, serialize($intData));
+      break;
+    
+    case 'intro_front':
+      $list = [];
+      if ($edit['list_number'] > 0) {
+        for ($i = 0; $i < $edit['list_number']; $i++) {
+          $title_key = 'title_' . $i;
+          $body_key = 'body_' . $i;
+          $summary_key = 'summary_' . $i;
+          $img_key = 'img_' . $i;
+          
+          if (!empty($edit[$img_key])) {
+            if ($file = file_load($edit[$img_key])) {
+              $file->status = FILE_STATUS_PERMANENT;
+              file_save($file);
+              file_usage_add($file, 'user', 'user', $user->uid);
+              $edit[$img_key] = $file->fid;
+            }
+            else {
+              $edit[$img_key] = 0;
+            }
+          }
+          if (!empty($edit[$title_key]) || !empty($edit[$body_key]) || !empty($edit[$img_key])) {
+            $list[] = [
+              'title' => (!empty($edit[$title_key])) ? $edit[$title_key] : '',
+              'summary' => (!empty($edit[$summary_key])) ? $edit[$summary_key] : '',
+              'body' => (!empty($edit[$body_key])) ? $edit[$body_key]['value'] : '',
+              'image' => (!empty($edit[$img_key])) ? $edit[$img_key] : '',
+            ];
+          }
+        }
+      }
+      
+      $intData = [
+        'list_number' => count($list),
+        'list' => $list,
+      ];
+      
+      variable_set($var_key, serialize($intData));
+      break;
+    
+    case 'front_statistics':
+      $intData = [
+        'title' => '',
+        'subtitle' => '',
+        'background' => 0,
+        'line' => [
+          [
+            'title' => 'Bác Sĩ',
+            'icon' => 0,
+            'number' => 9,
+          ],
+          [
+            'title' => 'Chi Nhánh Y Tế',
+            'icon' => 0,
+            'number' => 4,
+          ],
+          [
+            'title' => 'Phẫu Thuật Thành Công',
+            'icon' => 0,
+            'number' => 1600,
+          ],
+        ],
+      ];
+      if (!empty($edit['lang_title'])) {
+        $intData['lang_title'] = $edit['lang_title'];
+      }
+      if (!empty($edit['subtitle'])) {
+        $intData['subtitle'] = $edit['subtitle'];
+      }
+      if (!empty($edit['background'])) {
+        if ($file = file_load($edit['background'])) {
+          $file->status = FILE_STATUS_PERMANENT;
+          file_save($file);
+          file_usage_add($file, 'user', 'user', $user->uid);
+          $intData['background'] = $file->fid;
+        }
+        else {
+          $intData['background'] = 0;
+        }
+      }
+      
+      for ($i = 0; $i < 3; $i++) {
+        $intData['line'][$i]['title'] = $edit['title' . $i];
+        if ($file = file_load($edit['icon' . $i])) {
+          $file->status = FILE_STATUS_PERMANENT;
+          file_save($file);
+          file_usage_add($file, 'user', 'user', $user->uid);
+          $intData['line'][$i]['icon'] = $file->fid;
+        }
+        else {
+          $intData['line'][$i]['icon'] = 0;
+        }
+        $intData['line'][$i]['number'] = $edit['number' . $i];
+      }
+      
+      variable_set($var_key, serialize($intData));
+      break;
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function custom_block_view($delta = '') {
+  $block = [];
+  global $language;
+  $var_key = $delta . '_' . $language->language;
+  
+  switch ($delta) {
+    case 'pro_service_cate_tab':
+      module_load_include('inc', 'custom', 'custom');
+      $block['content'] = custom_build_pro_service_cate_tab();
+      break;
+    case 'why_choose_us':
+      module_load_include('inc', 'custom', 'custom');
+      $block['content'] = custom_build_why_choose_us($var_key);
+      break;
+    case 'intro_front':
+      module_load_include('inc', 'custom', 'custom');
+      $block['content'] = custom_build_intro_front($var_key);
+      break;
+    case 'front_statistics':
+      module_load_include('inc', 'custom', 'custom');
+      $block['content'] = custom_build_front_statistics($var_key);
+      break;
+    case 'custom_product_filter_form':
+      $block['content'] = theme('custom__product_filter_form');
+      break;
+    case 'custom_service_best_seller':
+      $block['content'] = custom_best_seller('service');
+      break;
+  }
+  
+  return $block;
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function custom_ctools_plugin_api($owner, $api) {
+  if ($owner == 'services' && $api == 'services') {
+    return [
+      'version' => 3,
+      'file' => 'custom.services.inc',
+    ];
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+//function custom_views_api() {
+//  return array(
+//    'api' => '3.0',
+//  );
+//}
+
+/**
+ * Implements hook_rest_server_request_parsed_alter().
+ * Fix auto login after register issue (session token).
+ */
+function custom_rest_server_request_parsed_alter(&$data, $controller) {
+  // If services was requested to log in user
+  if ('_user_resource_login' == $controller['callback']) {
+    // Force the current user to anonymous
+    if (user_is_logged_in()) {
+      global $user;
+      $user = drupal_anonymous_user();
+    }
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function custom_node_presave($node) {
+  if ($node->type == 'service') {
+    $node->shippable = 0;
+  }
+  
+  if ($node->type == 'video') {
+    if (!empty($node->field_video_youtube[LANGUAGE_NONE]) and $node->field_video_youtube[LANGUAGE_NONE][0]['video_id'] == '') {
+      // Require youtube field module.
+      if (!module_exists('youtube')) {
+        return;
+      }
+      
+      // Get a video id for this youtube field.
+      module_load_include('inc', 'youtube', 'youtube');
+      $video_id = youtube_get_video_id($node->field_video_youtube[LANGUAGE_NONE][0]['input']);
+      if ($video_id) {
+        $node->field_video_youtube[LANGUAGE_NONE][0]['video_id'] = $video_id;
+      }
+    }
+  }
+}
+
+
+function custom_create_empty_form($form, &$form_state) {
+  $form['body'] = [
+    '#type' => 'text_format',
+    '#title' => t('Description'),
+    '#default_value' => '',
+    '#format' => 'editor',
+    '#weight' => 0,
+    '#title_display' => 'invisible',
+  ];
+  
+  return $form;
+}
+
+function custom_views_pre_render(&$view) {
+  /*if ($view->name == 'drupalapp_node_functions') {
+    if (!empty($view->result)) {
+      foreach ($view->result as $key => $item) {
+        $view->result[$key]->field_field_video[0]['rendered']['#markup'] = render($item->field_field_video[0]['rendered']);
+      }
+    }
+    //dsm($view);
+  }*/
+  if ($view->name == 'drupalapp_node_functions') {
+    switch ($view->current_display) {
+      case 'page_29':
+        //        dsm($view);
+        foreach ($view->result as $key => $row) {
+          if ($row->node_field_data_field_course_video_nid) {
+            $video = node_load($view->result[$key]->node_field_data_field_course_video_nid);
+            $view->result[$key]->field_field_video_youtube = [
+              [
+                'rendered' => [
+                  '#markup' => custom_video_thumbnail_get($video, 'video_115x70'),
+                  '#access' => TRUE,
+                ],
+              ],
+            ];
+            
+          }
+        }
+        //        dsm($view->result);
+        break;
+      case 'page_28':
+        //        dsm($view);
+        foreach ($view->result as $key => $row) {
+          if ($row->nid) {
+            //            $video = node_load($view->result[$key]->node_field_data_field_course_video_nid);
+            $view->result[$key]->field_field_video_duration = [
+              [
+                'rendered' => [
+                  '#markup' => preg_replace('/(00 giờ )|( 00 giây)/', '', custom_get_course_duration($view->result[$key]->nid, 'H \g\i\ờ i \p\h\ú\t s \g\i\â\y')),
+                  '#access' => TRUE,
+                ],
+              ],
+            ];
+            
+          }
+        }
+        //        dsm($view->result);
+        break;
+      case 'page_26':
+        foreach ($view->result as $key => $row) {
+          if ($row->nid) {
+            //            $video = node_load($view->result[$key]->node_field_data_field_course_video_nid);
+            $view->result[$key]->field_field_video_duration = [
+              [
+                'rendered' => [
+                  '#markup' => preg_replace('/^00\:/', '', custom_get_course_duration($view->result[$key]->nid, 'H:i:s')),
+                  '#access' => TRUE,
+                ],
+              ],
+            ];
+            
+          }
+        }
+        break;
+    }
+  }
+  elseif ($view->name == 'drupalapp_order') {
+    switch ($view->current_display) {
+      case 'page':
+//        dsm($view->result);
+   
+        foreach ($view->result as $key => $row) {
+//          dsm( preg_replace('/(00 giờ )|( 00 giây)/', '', custom_get_course_duration($view->result[$key]->uc_order_products_uc_orders__node_nid, 'H \g\i\ờ i \p\h\ú\t s \g\i\â\y')));
+//          dsm($view->result[$key]->uc_order_products_uc_orders__node_nid);
+//          field_field_video_duration
+          $view->result[$key]->field_field_video_duration = [
+            [
+              'rendered' => [
+                '#markup' => preg_replace('/(00 giờ )|( 00 giây)/', '', custom_get_course_duration($view->result[$key]->uc_order_products_uc_orders__node_nid, 'H \g\i\ờ i \p\h\ú\t s \g\i\â\y'))
+              ],
+            ],
+          ];
+//          $row->field_field_video_duration = preg_replace('/(00 giờ )|( 00 giây)/', '', custom_get_course_duration('5231', 'H \g\i\ờ i \p\h\ú\t s \g\i\â\y'));
+          
+          
+        }
+        
+        break;
+    }
+  }
+}
+
+/**
+ * Return the custom settings form.
+ */
+function custom_site_settings_form() {
+  $form = [];
+  
+  $form['profile_notify_day'] = [
+    '#type' => 'textfield',
+    '#title' => 'Số ngày sẽ hiển thị thông báo',
+    '#description' => 'Số ngày sẽ hiển thị thông báo đề nghị khách hàng nhập tiếp các thông tin cá nhân còn lại.',
+    '#default_value' => variable_get('profile_notify_day', 3),
+    '#required' => TRUE,
+  ];
+  
+  $user_fields = field_info_instances('user', 'user');
+  $user_fields0 = $user_fields1 = $user_fields;
+  // Load profile field
+  $user_fields0 += field_info_instances('node', 'customer');
+  $user_fields1 += field_info_instances('node', 'doctor');
+  
+  $profile_fields0 = variable_get('profile_percent_customer', [
+    'field_full_name' => 5,
+    'field_photo' => 5,
+    'field_mobile_number' => 5,
+    'field_birthdate' => 5,
+    'field_cities' => 5,
+    'field_address' => 3,
+    'field_cover_picture' => 3,
+  ]);
+  $profile_fields1 = variable_get('profile_percent_doctor', [
+    'field_full_name' => 5,
+    'field_photo' => 5,
+    'field_mobile_number' => 5,
+    'field_birthdate' => 5,
+    'field_cities' => 5,
+    'field_user_description' => 5,
+    'field_address' => 3,
+    'field_current_address' => 3,
+    'field_social_address' => 3,
+    'field_cover_picture' => 3,
+  ]);
+  $form['settings_profile_percentage'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Tỷ lệ % tương ứng với mỗi phần thông tin hoàn thành trong Trang Cá Nhân',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  ];
+  //Settings for customer
+  $form['settings_profile_percentage']['profile_fields0'] = [
+    '#title' => 'Đối với Khách hàng',
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  ];
+  foreach ($profile_fields0 as $field => $point) {
+    $key = 'profile_0_' . $field;
+    $form['settings_profile_percentage']['profile_fields0'][$key] = [
+      '#type' => 'textfield',
+      '#title' => $user_fields0[$field]['label'],
+      '#default_value' => $point,
+      '#required' => TRUE,
+    ];
+  }
+  //Settings for doctor
+  $form['settings_profile_percentage']['profile_fields1'] = [
+    '#title' => 'Đối với Nhà cung cấp',
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  ];
+  foreach ($profile_fields1 as $field => $point) {
+    $key = 'profile_1_' . $field;
+    $form['settings_profile_percentage']['profile_fields1'][$key] = [
+      '#type' => 'textfield',
+      '#title' => $user_fields1[$field]['label'],
+      '#default_value' => $point,
+      '#required' => TRUE,
+    ];
+  }
+  
+  
+  $form['submit'] = [
+    '#type' => 'submit',
+    '#value' => t('Save changes'),
+  ];
+  
+  return $form;
+}
+
+function custom_site_settings_form_validate($form, &$form_state) {
+  $profile_0 = [];
+  $profile_1 = [];
+  $total0 = $total1 = 0;
+  if (!is_numeric($form_state['values']['profile_notify_day']) || $form_state['values']['profile_notify_day'] <= 0) {
+    form_set_error('profile_notify_day', 'Giá trị phải là một số > 0');
+  }
+  
+  foreach ($form_state['values'] as $key => $value) {
+    //Score for profile customer
+    if (strpos($key, 'profile_0_') > -1) {
+      $profile_0[] = $key;
+      if ($value != '' && !is_numeric($value)) {
+        form_set_error($key, 'Giá trị phải là một số');
+      }
+      else {
+        $total0 += $value;
+      }
+    }
+    //Score for profile doctor
+    if (strpos($key, 'profile_1_') > -1) {
+      $profile_1[] = $key;
+      if ($value != '' && !is_numeric($value)) {
+        form_set_error($key, 'Giá trị phải là một số');
+      }
+      else {
+        $total1 += $value;
+      }
+    }
+  }
+  
+  if ($total0 != 100) {
+    form_set_error($profile_0[0], 'Tổng giá trị phải bằng 100');
+  }
+  if ($total1 != 100) {
+    form_set_error($profile_1[0], 'Tổng giá trị phải bằng 100');
+  }
+}
+
+/**
+ * Custom settings form submit.
+ */
+function custom_site_settings_form_submit($form, &$form_state) {
+  // dsm($form_state['values']);
+  $profile_0 = [];
+  $profile_1 = [];
+  foreach ($form_state['values'] as $key => $value) {
+    //Score for profile customer
+    if (strpos($key, 'profile_0_') > -1) {
+      $s_key = str_replace('profile_0_', '', $key);
+      $profile_0[$s_key] = $value;
+    }
+    //Score for profile doctor
+    if (strpos($key, 'profile_1_') > -1) {
+      $s_key = str_replace('profile_1_', '', $key);
+      $profile_1[$s_key] = $value;
+    }
+  }
+  
+  variable_set('profile_percent_customer', $profile_0);
+  variable_set('profile_percent_doctor', $profile_1);
+  variable_set('profile_notify_day', $form_state['values']['profile_notify_day']);
+  
+  drupal_set_message('Cài đặt của bạn đã được lưu.');
+}
+
+
+/**
+ * Return the custom settings form.
+ */
+function custom_site_notification_form() {
+  $form = [];
+  
+  $form['notification_order_complete'] = [
+    '#type' => 'textarea',
+    '#title' => 'Thông báo hoàn thành đơn đặt hàng',
+    '#description' => 'Thông báo sẽ gửi qua tin nhắn cho Khách Hàng sau khi họ hoàn thành thanh toán.',
+    '#default_value' => variable_get('notification_order_complete', ''),
+    '#required' => TRUE,
+    '#token_types' => ['uc_order', 'user'],
+    '#min_tokens' => 1,
+    '#parents' => ['notification_order_complete'],
+  ];
+  
+  $form['token_help'] = [
+    '#theme' => 'token_tree',
+    '#token_types' => ['uc_order', 'user'],
+    '#dialog' => TRUE,
+  ];
+  
+  /*$form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save changes'),
+  );*/
+  
+  return system_settings_form($form);
+}
+
+function custom_site_notification_form_validate($form, &$form_state) {
+}
+
+/**
+ * Custom settings form submit.
+ */
+function custom_site_notification_form_submit($form, &$form_state) {
+  variable_set('notification_order_complete', $form_state['values']['notification_order_complete']);
+  
+  drupal_set_message('Cài đặt của bạn đã được lưu.');
+}
+
+/**
+ * Implements hook_uc_cart_item_delete().
+ */
+function custom_uc_cart_item_delete($entity) {
+  $cartContent = uc_cart_get_contents();
+  // remove addon product
+  if (!empty($entity->field_products_addon)) {
+    $ids = array_column($entity->field_products_addon['und'], 'value');
+    if ($collection = field_collection_item_load_multiple($ids)) {
+      foreach ($collection as $key => $item) {
+        $addon = $item->field_product_addon['und'][0]['target_id'];
+        foreach ($cartContent as $k => $citem) {
+          if (!empty($citem->field_parent_nid) && $addon == $citem->field_parent_nid['und'][0]['value']) {
+            $citem->qty = 0;
+            uc_cart_update_item($citem);
+          }
+        }
+      }
+    }
+  }
+  
+  //Remove addon service
+  if (!empty($entity->field_services_addon)) {
+    $ids = array_column($entity->field_services_addon['und'], 'value');
+    if ($collection = field_collection_item_load_multiple($ids)) {
+      foreach ($collection as $key => $item) {
+        $addon = $item->field_service['und'][0]['target_id'];
+        foreach ($cartContent as $k => $citem) {
+          if (!empty($citem->field_parent_nid) && $addon == $citem->field_parent_nid['und'][0]['value']) {
+            $citem->qty = 0;
+            uc_cart_update_item($citem);
+          }
+        }
+      }
+    }
+  }
+}
