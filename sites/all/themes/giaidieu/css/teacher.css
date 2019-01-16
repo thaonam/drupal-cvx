@@ -3,9 +3,9 @@
 }
 .teacher-social-links a .fa.fa-phone:hover {
     background: #f60;
-    -webkit-box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.13);
+    -webkit-box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.13);
     color: #fff;
-    box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.13);
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.13);
 }
 .teacher-social-links .fa.fa-messenger {
     background-image: url(/sites/all/themes/giaidieu/images/fb-messenger.png);

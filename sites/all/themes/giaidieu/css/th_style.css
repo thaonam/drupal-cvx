@@ -170,8 +170,7 @@ html.js .quicktabs-wrapper .block-views > div.contextual-links-wrapper {
 }
 
 .th_address {
-  /*background: #1c95de;*/
-  background: #8dc63f;
+  background: #98c35f;
   border-radius: 6px;
   padding: 30px 20px;
 }
@@ -186,7 +185,6 @@ html.js .quicktabs-wrapper .block-views > div.contextual-links-wrapper {
   padding: 0 10px 10px;
   display: inline-block;
   text-align: left;
-  /*color: #003366;*/
   color: #fff;
 }
 

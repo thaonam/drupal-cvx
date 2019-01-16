@@ -17,7 +17,7 @@
   }
 }
 .important-infor .important-text {
-  background: #8dc63f;
+  background: #98c35f;
   padding: 10px 15px;
   border-radius: 50px;
   color: #fff;
@@ -34,9 +34,7 @@
 .important-infor .important-detail {
   padding-left: 15px;
 }
-/* .service-wrapper .ch_service {
-  margin-bottom: 30px; 
-} */
+
 .ch_service .image {
   position: relative;
   height: 260px;

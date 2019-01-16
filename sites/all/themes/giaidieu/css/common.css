@@ -309,7 +309,7 @@
 }
 
 .page-menu .logo-conner {
-  background-color: #8dc63f;
+  background-color: #98c35f;
   height: 70px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -491,14 +491,14 @@
 }
 
 .account-complete .number {
-  color: #8dc63f;
+  color: #98c35f;
   float: right;
 }
 
 .user-manage .title {
   font-weight: 700;
   font-size: 16px;
-  color: #8dc63f;
+  color: #98c35f;
   text-transform: uppercase;
   padding: 0 20px 15px;
   border-bottom: solid 1px #ebebeb;
@@ -620,7 +620,7 @@
 
 .header-personal {
   height: 70px;
-  background-color: #8dc63f;
+  background-color: #98c35f;
   padding: 0 15px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -770,7 +770,7 @@
 
 .personal-box .block-title {
   padding: 10px 15px;
-  background-color: #8dc63f;
+  background-color: #98c35f;
   font-size: 16px;
   color: #fff;
   text-transform: capitalize;
