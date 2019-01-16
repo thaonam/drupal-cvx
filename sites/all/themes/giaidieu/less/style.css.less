@@ -184,6 +184,10 @@ img {
           display: flex;
           flex: 0 0 ~'calc(100% - 150px)';
           padding-left: 35px;
+          @media (max-width: 767px) {
+            padding-left: 10px;
+            flex: 0 0 ~'calc(100% - 100px)';
+          }
 
           .th_cart-block {
             margin-top: -10px;
@@ -238,6 +242,51 @@ img {
             > li > a:hover, > li > a:focus, > li.active a, li.active a.active, a.active {
               background: transparent;
               color: #f7b431;
+            }
+
+            a {
+              @media (max-width: 767px) {
+                font-size: 0;
+                &[href="/user"]:before {
+                  content: '\f2c0 ';
+                  display: inline-block;
+                  font: normal normal normal 18px/1 FontAwesome !important;
+                  font-size: inherit;
+                  text-rendering: auto;
+                  -webkit-font-smoothing: antialiased;
+                  -moz-osx-font-smoothing: grayscale;
+                }
+
+                &[href="/user/logout"]:before, &[href="/user/logout?current=node"]:before {
+                  content: '\f08b';
+                  display: inline-block;
+                  font: normal normal normal 18px/1 FontAwesome !important;
+                  font-size: inherit;
+                  text-rendering: auto;
+                  -webkit-font-smoothing: antialiased;
+                  -moz-osx-font-smoothing: grayscale;
+                }
+
+                &[href="/custom/login-form"]:after {
+                  content: '\f090';
+                  display: inline-block;
+                  font: normal normal normal 18px/1 FontAwesome !important;
+                  font-size: inherit;
+                  text-rendering: auto;
+                  -webkit-font-smoothing: antialiased;
+                  -moz-osx-font-smoothing: grayscale;
+                }
+
+                &[href="/custom/register-form"]:after {
+                  content: '\f234 ';
+                  display: inline-block;
+                  font: normal normal normal 18px/1 FontAwesome !important;
+                  font-size: inherit;
+                  text-rendering: auto;
+                  -webkit-font-smoothing: antialiased;
+                  -moz-osx-font-smoothing: grayscale;
+                }
+              }
             }
           }
         }
@@ -302,6 +351,7 @@ img {
                 padding: 14.5px 0;
                 color: #98c35f;
               }
+
 
               &:after {
                 position: absolute;
