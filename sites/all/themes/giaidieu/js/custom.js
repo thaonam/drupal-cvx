@@ -5,22 +5,24 @@
 
       // Add class merge for rows
       if ($('body').hasClass('page-tim-kiem')) {
-        $('.page-tim-kiem').find('.node-product.node-teaser').each(function(index, elm) {
+        $('.page-tim-kiem').find('.node-product.node-teaser').each(function (index, elm) {
           var merge_class = elm.dataset ? 'merge-' + elm.dataset.merge : '';
           $(elm).closest('.views-row').addClass(merge_class);
-        })
+        });
       }
 
       // Wishlist handle
-      $.get('/whishlist-content', function(data) {
+      $.get('/whishlist-content', function (data) {
         if (!$.isEmptyObject(data.nodes)) {
           for (var i in data.nodes) {
             var wnid = '.dh-wishlist #uc-product-add-to-cart-form-' + data.nodes[i].node.nid;
-            if ($(wnid).length) $(wnid).find('.node-add-to-wishlist').addClass('active');
+            if ($(wnid).length) {
+              $(wnid).find('.node-add-to-wishlist').addClass('active');
+            }
           }
         }
-      })
-      
+      });
+
       //Chuyển 2 block thầy thuốc gia đình ở trang tin tức ra ngoài content
       if ($('body').hasClass('page-node-328')) {
         if ($('#block-block-19').length) {
@@ -30,7 +32,7 @@
           $('#page').once('move_TTGD_bottom').append($('#block-quicktabs-doctor-family'));
         }
       }
-      
+
       var owl_3_settings = {
         items: 3,
         lazyLoad: true,
@@ -55,7 +57,7 @@
             items: 3,
           }
         }
-      }
+      };
       var owl_4_settings = {
         //items: 4,
         autoplay: true,
@@ -83,7 +85,7 @@
             items: 4,
           },
         }
-      }
+      };
       var owl_2_settings = {
         lazyLoad: true,
         nav: true,
@@ -100,7 +102,7 @@
             items: 2,
           },
         }
-      }
+      };
       var owl_5_settings = {
         //items: 4,
         autoplay: true,
@@ -131,7 +133,7 @@
             items: 5
           }
         }
-      }
+      };
       var owl_1_settings = {
         rewind: true,
         lazyLoad: true,
@@ -144,7 +146,7 @@
         autoplayTimeout: 2000,
         autoplayHoverPause: true,
         merge: true,
-      }
+      };
       var owl_3_settings_dots = {
         //items: 3,
         rewind: true,
@@ -155,7 +157,7 @@
         autoplay: true,
         autoplayTimeout: 2000,
         autoplayHoverPause: true,
-        
+
         // Responsive 
         responsive: {
           // breakpoint from 0 up
@@ -172,7 +174,7 @@
           }
         }
       }
-      
+
       $('.news-custom-slide.owl-carousel').owlCarousel({
         rewind: true,
         lazyLoad: true,
@@ -182,7 +184,7 @@
         dots: false,
         items: 1
       });
-      
+
       if ($('.dh-review-slide .view-content').length) {
         var fbSlide = $('.dh-review-slide .view-content');
         fbSlide.addClass('owl-carousel').owlCarousel({
@@ -206,21 +208,22 @@
           fbSlide.trigger('play.owl.video');
         });
       }
-      
+
       $('.page-node-329 .form-item-submitted-other > label').click(function () {
         $(this).next().slideToggle();
       });
-      
+
       $('.page-node-329 #edit-submitted-other label').each(function () {
         $(this).click(function () {
           if ($(this).find('input[type="checkbox"]:checked').length) {
             $(this).addClass('check');
-          } else {
+          }
+          else {
             $(this).removeClass('check');
           }
         })
       })
-      
+
       // Slideshow
       if ($('.not-front .custom-slideshow').length) {
         $('.not-front .custom-slideshow').each(function () {
@@ -230,14 +233,14 @@
           if (!$(this).hasClass('owl-4-items')) {
             $(this).addClass('owl-3-items').find('.owl-carousel').owlCarousel(owl_3_settings);
           }
-          
+
           else {
             $(this).find('.owl-carousel').owlCarousel(owl_4_settings);
           }
-          
+
         });
       }
-      
+
       if ($('.review-wrapper').length) {
         $('.dh-carousel-review').flexslider({
           animation: "slide",
@@ -253,7 +256,7 @@
           itemMargin: 0,
           asNavFor: '.dh-flex-review'
         });
-        
+
         $('.dh-flex-review').flexslider({
           animation: "slide",
           controlNav: false,
@@ -265,7 +268,7 @@
             $('.dh-body-alter-wrapper').flexslider(slider.animatingTo);
           }
         });
-        
+
         $('.dh-body-alter-wrapper').flexslider({
           animation: "slide",
           controlNav: false,
@@ -274,7 +277,7 @@
           pauseOnAction: false,
         });
       }
-      
+
       // Partner
       if ($('.partner').length) {
         $('.partner').find('.view-content').addClass('owl-carousel').children('.views-row').removeClass('col-20');
@@ -303,27 +306,32 @@
           }
         });
       }
-      
+
       /* slide pager loadmore custom-slide slide-pager
        * view has class: col-1-items for 1 item per colum else 2 item per colum
        * view has class: owl-4-items for slide with 4 item per slide , owl-1-item for 1 item else 3.
        */
       if ($('.slide-pager').length) {
         $.each(Drupal.views.instances, function (index, view) {
-          
+
           if (view.$view.hasClass('slide-pager')) {
             view.$view.addClass('row').find('.pager').hide();
             var owlSettings = owl_3_settings;
-            if (view.$view.hasClass('owl-5-items'))
+            if (view.$view.hasClass('owl-5-items')) {
               owlSettings = owl_5_settings;
-            if (view.$view.hasClass('owl-4-items'))
+            }
+            if (view.$view.hasClass('owl-4-items')) {
               owlSettings = owl_4_settings;
-            if (view.$view.hasClass('owl-2-items'))
+            }
+            if (view.$view.hasClass('owl-2-items')) {
               owlSettings = owl_2_settings;
-            if (view.$view.hasClass('owl-1-item'))
+            }
+            if (view.$view.hasClass('owl-1-item')) {
               owlSettings = owl_1_settings;
-            if (view.$view.hasClass('owl-3-item-dots'))
+            }
+            if (view.$view.hasClass('owl-3-item-dots')) {
               owlSettings = owl_3_settings_dots;
+            }
             var itemPerCol = (view.$view.hasClass('col-1-items')) ? 1 : 2;
             var $slidePager = this.$view.find('.view-content');
             var newHtml = marge_slide_item($slidePager.children('.views-row'), itemPerCol);
@@ -338,8 +346,8 @@
           }
         })
       }
-      
-      
+
+
       /* marge slide item for new slide
        * $rows rows jquery element object
        * itemPerCol: item per colum
@@ -356,21 +364,24 @@
         for (var i = 0; i < $rows.length; i = i + itemPerCol) {
           if (itemPerCol > 1) {
             var second = '';
-            if ((i + 1) < $rows.length)
+            if ((i + 1) < $rows.length) {
               second = $rows[i + 1].innerHTML;
+            }
             var tmp = $rows[i].innerHTML + second;
-          } else {
+          }
+          else {
             var tmp = $rows[i].innerHTML;
           }
           out.push(tmp);
         }
-        
-        if (type == 'string')
+
+        if (type == 'string') {
           return out.join('\n');
-        
+        }
+
         return out;
       }
-      
+
       function slide_loadmore($slidePager, view) {
         if (view.$view.find('.pager-next a').length) {
           var next = view.$view.find('.pager-next a').attr('href').split('?page=')[1];
@@ -392,7 +403,8 @@
                       $slidePager.trigger('add.owl.carousel', elm);
                     });
                     $slidePager.trigger('refresh.owl.carousel');
-                  } catch (err) {
+                  }
+                  catch (err) {
                     // console.log(err);
                   }
                 }
@@ -401,13 +413,13 @@
           }
         }
       }
-      
+
       // thêm nút tăng giảm trong chọn số lượng
       if ($('.add-to-cart').length) {
         $('.add-to-cart .form-item-qty input').after('<div class="change"><div class="increase">+</i></div><div class="decrease">-</div></div>');
         $('.change .increase').once('oneclick').click(function () {
           var value = parseInt($('.add-to-cart .form-item-qty input').val());
-          
+
           value++;
           $('.add-to-cart .form-item-qty input').val(value);
         });
@@ -417,17 +429,17 @@
             value--;
             $('.add-to-cart .form-item-qty input').val(value);
           }
-          
+
         });
       }
-      
+
       //  Family docter video: slideshow video
       if ($('#block-views-node-functions-slide-new-videos').length) {
-        
+
         var $slideVideos = $('#block-views-node-functions-slide-new-videos .slideshow-videos');
         $slideVideos.children('.view-header').addClass('col-sm-9');
         $slideVideos.children('.view-content').addClass('col-sm-3');
-        
+
         /*
         var vid = $slideVideos.find('.views-row:first-child .video-url').attr('data-vid');
         $slideVideos.find('.views-row:first-child .video-url').once('first_video').addClass('active');
@@ -455,7 +467,7 @@
         });
         */
       }
-      
+
       if ($('body').hasClass('node-type-family-doctor-video')) {
         if ($('#block-views-node-functions-block-42').length) {
           $('.region-content-below > .block:last-child').once('move_related_pro_top_bottom').after($('#block-views-node-functions-block-42'));
@@ -464,13 +476,13 @@
           $('.region-content-below > .block:last-child').once('move_related_pro_top_bottom').after($('#block-views-node-functions-block-38'));
         }
       }
-      
-      
+
+
       if ($('#block-custom-front-statistics').length && $('#block-custom-front-statistics h2.block-title').length) {
         $('#block-custom-front-statistics').once('move_title').find('.bg-overlay').after($('#block-custom-front-statistics').children('h2.block-title'));
       }
-      
-      
+
+
     }
   };
 })(jQuery, Drupal);

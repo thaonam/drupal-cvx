@@ -390,7 +390,7 @@ form.uc-cart-checkout-form > div:after,
 }
 
 .dh-product-item .product-price .sale-price {
-  color: #ff6600;
+  color: #f60;
   order: -1;
   margin-right: 10px;
 }
@@ -418,138 +418,7 @@ form.uc-cart-checkout-form > div:after,
   margin-right: 12px;
 }
 
-.dh-block-strengths {
-  background: url("../images/hung-image/bg1.jpg") center no-repeat;
-  background-size: cover;
-  position: relative;
-  padding: 70px 0 40px;
-}
 
-.dh-block-strengths .block-title {
-  font-size: 30px;
-  font-weight: 500;
-  color: #fff;
-  margin-bottom: 40px;
-  position: relative;
-  text-align: center;
-  text-transform: capitalize;
-  z-index: 2;
-}
-
-.dh-block-strengths .block-title:after {
-  position: absolute;
-  content: '';
-  width: 170px;
-  height: 20px;
-  top: 100%;
-  left: 50%;
-  -webkit-transform: translate(-50%, 5px);
-  transform: translate(-50%, 5px);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-image: url(../images/icons/heartbeat-white.png);
-}
-
-.dh-block-strengths .container > div,
-.dh-block-strengths ul {
-  position: relative;
-  z-index: 1;
-}
-
-.dh-block-strengths .bg-overlay,
-.dh-block-strengths .container .bg-overlay {
-  position: absolute;
-  left: calc(-50vw);
-  top: 0;
-  width: 150vw;
-  height: 100%;
-  content: '';
-  background: #000;
-  opacity: 0.15;
-  z-index: 0;
-}
-
-.dh-block-strengths .dh-strengths-list {
-  padding-top: 40px;
-}
-
-.dh-block-strengths .dh-strength {
-  color: #fff;
-  /*background-color: #02b9fd;*/
-  background-color: #8dc63f;
-  border-radius: 9px;
-  padding: 50px 35px;
-  text-align: center;
-  height: 100%;
-}
-
-.dh-block-strengths .dh-strength:hover .btn {
-  color: #fff;
-}
-
-.dh-block-strengths .dh-strength:hover .btn:after {
-  right: 15px;
-  -webkit-transform: translate(0, -50%);
-  transform: translate(0, -50%);
-}
-
-.dh-block-strengths .dh-strength:hover img {
-  -webkit-transform: rotateY(-180deg);
-  transform: rotateY(-180deg);
-}
-
-.dh-block-strengths .dh-strength .strength-icon {
-  margin-bottom: 15px;
-  height: 80px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: end;
-  -ms-flex-align: end;
-  align-items: flex-end;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-.dh-block-strengths .dh-strength .strength-icon img {
-  width: 80px;
-  -webkit-transition: all 0.3s linear;
-  transition: all 0.3s linear;
-}
-
-.dh-block-strengths .dh-strength .strength-title {
-  font-size: 23px;
-  font-weight: 500;
-  padding-bottom: 15px;
-  margin-bottom: 18px;
-  position: relative;
-}
-
-.dh-block-strengths .dh-strength .strength-title a {
-  color: inherit;
-}
-
-.dh-block-strengths .dh-strength .strength-title:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  width: 30px;
-  height: 1px;
-  background-color: #fff;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-}
-
-.dh-block-strengths .dh-strength .strength-des {
-  margin-bottom: 20px;
-}
-
-.dh-block-strengths .owl-nav {
-  color: #fff;
-}
 
 .btn-border-default {
   font-size: 18px;
@@ -1185,7 +1054,7 @@ form#views-exposed-form-search-content-page {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #ff6600;
+  background-color: #f60;
   color: #fff;
   font-size: 18px;
   font-weight: 500;
@@ -1231,7 +1100,7 @@ form#views-exposed-form-search-content-page {
 }
 
 .dh-sale-product .product-line .product-price .sale-price {
-  color: #ff6600;
+  color: #f60;
   margin-right: 10px;
   order: -1;
 }
@@ -1408,7 +1277,7 @@ form#views-exposed-form-search-content-page {
   content: '';
   width: 100%;
   height: 4px;
-  background: #ff6600;
+  background: #f60;
   visibility: hidden;
   opacity: 0;
   -webkit-transition: all 0.3s ease;
@@ -1540,7 +1409,7 @@ form#views-exposed-form-search-content-page {
   display: inline-block;
   padding-bottom: 5px;
   /*border-bottom: 3px solid #8dc63f;*/
-  border-bottom: 3px solid #ff6600;
+  border-bottom: 3px solid #f60;
 }
 
 .dh-block-video-list .block-title:before {
@@ -1664,7 +1533,7 @@ form#views-exposed-form-search-content-page {
   width: 75px;
   height: 35px;
   border-radius: 6px;
-  background-color: #ff6600;
+  background-color: #f60;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   position: relative;
@@ -2023,8 +1892,8 @@ form#views-exposed-form-search-content-page {
 }
 
 /*.dh-block-video-details .dh-video-demo.livestreaming {*/
-  /*height: 656px;*/
-  /*height: calc(((100vw - 30px) * 9) / 16);*/
+/*height: 656px;*/
+/*height: calc(((100vw - 30px) * 9) / 16);*/
 /*}*/
 .dh-block-video-details .dh-video-demo.livestreaming {
   height: 656px;
@@ -2048,8 +1917,8 @@ form#views-exposed-form-search-content-page {
   }
 }
 /*.dh-block-video-details .dh-video-demo.livestreaming #livestream {*/
-  /*height: 656px;*/
-  /*height: calc(((100vw * 9) / 16 ) + 55px);*/
+/*height: 656px;*/
+/*height: calc(((100vw * 9) / 16 ) + 55px);*/
 /*}*/
 
 .dh-block-video-details .dh-video-demo p.empty-text {
@@ -3420,7 +3289,7 @@ form#views-exposed-form-search-content-page {
     right: 20px;
     bottom: 20px;
   }
-  
+
   .dh-phone-ring img {
     width: 30px;
   }
@@ -3433,7 +3302,7 @@ form#views-exposed-form-search-content-page {
     width: 86px;
     height: 86px;
   }
-  
+
   .dh-phone-ring img {
     width: 37px;
   }
@@ -3988,7 +3857,7 @@ form.uc-cart-checkout-form #payment-pane .panel-body .form-type-radios label inp
     width: 100% !important;
     padding-right: 0 !important;
   }
-  
+
   #payment-details div.form-item-panes-payment-details-bankcode.form-type-radio {
     width: calc(50%) !important;
   }
@@ -4114,13 +3983,13 @@ form.uc-cart-checkout-form .form-actions #edit-cancel span {
 
 form.uc-cart-checkout-form .form-actions #edit-cancel:hover,
 form.uc-cart-checkout-form .form-actions #edit-cancel:focus {
-  background-color: #ff6600;
-  border-color: #ff6600;
+  background-color: #f60;
+  border-color: #f60;
 }
 
 form.uc-cart-checkout-form .form-actions #edit-continue {
-  background-color: #ff6600;
-  border: solid 1px #ff6600;
+  background-color: #f60;
+  border: solid 1px #f60;
 }
 
 form.uc-cart-checkout-form .form-actions #edit-continue:hover,
@@ -4258,91 +4127,6 @@ form.uc-cart-checkout-form .form-actions #edit-continue:focus {
   }
 }
 
-.dh-reason-hotline {
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto 25px;
-}
-
-@media (min-width: 768px) {
-  .dh-reason-hotline {
-    width: 350px;
-    margin: 0 auto;
-  }
-}
-
-@media (min-width: 992px) {
-  .dh-reason-hotline {
-    width: 425px;
-  }
-}
-
-.dh-reason-hotline .image {
-  margin-bottom: 21px;
-}
-
-.dh-reason-hotline .image img {
-  width: 100%;
-}
-
-.dh-reason-hotline .dh-reason-body {
-  /*border: solid 1px #1c95de;*/
-  border: solid 1px #8dc63f;
-  height: 82px;
-  /*color: #1c95de;*/
-  color: #f60;
-  text-transform: capitalize;
-  font-size: 16px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  position: relative;
-}
-
-@media (min-width: 992px) {
-  .dh-reason-hotline .dh-reason-body {
-    font-size: 20px;
-  }
-}
-
-.dh-reason-hotline .dh-reason-body:before {
-  position: absolute;
-  content: '';
-  top: 0;
-  left: 0;
-  width: 0px;
-  height: 0px;
-  border-top: 41px solid transparent;
-  border-bottom: 41px solid transparent;
-  /*border-left: 35px solid #1c95de;*/
-  border-left: 35px solid #8dc63f;
-}
-
-.dh-reason-hotline .dh-reason-body:after {
-  position: absolute;
-  content: '';
-  top: 0;
-  right: 0;
-  width: 0px;
-  height: 0px;
-  border-top: 41px solid transparent;
-  border-bottom: 41px solid transparent;
-  border-right: 35px solid #8dc63f;
-}
-
-.dh-reason-hotline .dh-reason-body .dh-content {
-  text-align: left;
-}
-
-.dh-reason-hotline .dh-reason-body .dh-hotline {
-  font-weight: 500;
-}
 
 .dh-reason-item {
   display: -webkit-box;
@@ -4358,10 +4142,6 @@ form.uc-cart-checkout-form .form-actions #edit-continue:focus {
   outline: none;
 }
 
-/* .dh-reason-item:hover .dh-number {
-  background: #8dc63f;
-} */
-
 .dh-reason-item .dh-number {
   height: 50px;
   width: 50px;
@@ -4373,11 +4153,9 @@ form.uc-cart-checkout-form .form-actions #edit-continue:focus {
   font-size: 25px;
   color: #fff;
   font-weight: 500;
-  border-radius: 50%;
-  /*background: #1c95de;*/
-  background: #8dc63f;
-  -webkit-box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.13);
-  box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.13);
+  background: #98c35f;
+  -webkit-box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.13);
+  box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.13);
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
   text-align: center;
@@ -4385,7 +4163,7 @@ form.uc-cart-checkout-form .form-actions #edit-continue:focus {
 }
 
 .dh-number:hover {
-  background: #ff6600;
+  background: #f60;
 }
 
 .dh-reason-item .dh-body {
@@ -4395,8 +4173,7 @@ form.uc-cart-checkout-form .form-actions #edit-continue:focus {
 
 .dh-reason-item .title {
   font-size: 19px;
-  /*color: #008fe5;*/
-  color: #ff6600;
+  color: #f60;
   font-weight: 500;
   text-transform: capitalize;
   margin-bottom: 10px;
@@ -4430,7 +4207,6 @@ form.uc-cart-checkout-form .form-actions #edit-continue:focus {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  /*background: #1c95de;*/
   background: #f60;
   text-align: center;
   line-height: 44px;
@@ -5767,7 +5543,7 @@ div.stickynav-active {
 
 .dh-wishlist .node-add-to-wishlist:hover,
 .dh-wishlist .node-add-to-wishlist.active {
-  color: #ff0000;
+  color: #f00;
 }
 
 .dh-wishlist .node-add-to-wishlist:before {
@@ -5779,7 +5555,7 @@ div.stickynav-active {
 
 .dh-wishlist .node-add-to-wishlist:hover:before,
 .dh-wishlist .node-add-to-wishlist.active:before {
-  color: #ff6600;
+  color: #f60;
   content: '\f004';
 }
 
@@ -6314,7 +6090,7 @@ body.node-type-video .dh-phone .fa.fa-shopping-cart {
   color: #fff;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  
+
   background-color: #1c95de;
   border-radius: 50%;
   height: 36px;
@@ -6331,7 +6107,7 @@ body.node-type-video .dh-phone .fa.fa-calendar-check-o {
   color: #fff;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  
+
   background-color: #1c95de;
   border-radius: 50%;
   height: 36px;
@@ -6461,7 +6237,7 @@ body.node-type-video .fa.fa-phone {
   color: #fff;
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
-  
+
   background-color: #1c95de;
   border-radius: 50%;
 }

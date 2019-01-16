@@ -95,16 +95,16 @@ if (!drupal_is_front_page() || !isset($user->roles[4])) {
 <!-- Header -->
 <div id="header" class="clearfix">
 
-  <?php if ($page['top_header']): ?>
-    <div class="header-top">
-      <div class="container">
-        <div class="row">
-          <?php print render($page['top_header']); ?>
-        </div>
-      </div>
-    </div>    
-    <!-- / top header -->
-  <?php endif; ?>
+<!--  --><?php //if ($page['top_header']): ?>
+<!--    <div class="header-top">-->
+<!--      <div class="container">-->
+<!--        <div class="row">-->
+<!--          --><?php //print render($page['top_header']); ?>
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>    -->
+<!--  --><?php //endif; ?>
+  <!-- / top header -->
 
   <?php if ($page['header']): ?>
   <div id="header-content">
