@@ -145,7 +145,6 @@ img {
               width: 0;
 
               button.btn-primary {
-                font-size: 0;
                 position: absolute;
                 padding: 0;
                 right: 5px;
@@ -163,16 +162,18 @@ img {
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: auto 18px;
-                background-image: url(../images/icons/search.png);
-                display: none;
+                //background-image: url(../images/icons/search.png);
+                display: flex;
+                align-items: center;
+                font-size: 16px;
 
                 span {
                   color: #98c35f;
                 }
 
                 @media (min-width: 768px) {
-                  display: block;
                   right: 10px;
+                  margin-right: 10px;
                 }
               }
             }
@@ -235,60 +236,64 @@ img {
           margin-left: auto;
         }
 
-        section#block-system-user-menu .block-content {
-          ul {
-            display: flex;
+        section#block-system-user-menu {
+          .block-content {
+            ul {
+              display: flex;
 
-            > li > a:hover, > li > a:focus, > li.active a, li.active a.active, a.active {
-              background: transparent;
-              color: #f7b431;
-            }
+              > li > a:hover, > li > a:focus, > li.active a, li.active a.active, a.active {
+                background: transparent;
+                color: #f7b431;
+              }
 
-            a {
-              @media (max-width: 767px) {
-                font-size: 0;
-                &[href="/user"]:before {
-                  content: '\f2c0 ';
-                  display: inline-block;
-                  font: normal normal normal 18px/1 FontAwesome !important;
-                  font-size: inherit;
-                  text-rendering: auto;
-                  -webkit-font-smoothing: antialiased;
-                  -moz-osx-font-smoothing: grayscale;
-                }
+              a {
+                color: #98c35f;
+                @media (max-width: 767px) {
+                  font-size: 0;
+                  &[href="/user"]:before {
+                    content: '\f2c0 ';
+                    display: inline-block;
+                    font: normal normal normal 18px/1 FontAwesome !important;
+                    font-size: inherit;
+                    text-rendering: auto;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                  }
 
-                &[href="/user/logout"]:before, &[href="/user/logout?current=node"]:before {
-                  content: '\f08b';
-                  display: inline-block;
-                  font: normal normal normal 18px/1 FontAwesome !important;
-                  font-size: inherit;
-                  text-rendering: auto;
-                  -webkit-font-smoothing: antialiased;
-                  -moz-osx-font-smoothing: grayscale;
-                }
+                  &[href="/user/logout"]:before, &[href="/user/logout?current=node"]:before {
+                    content: '\f08b';
+                    display: inline-block;
+                    font: normal normal normal 18px/1 FontAwesome !important;
+                    font-size: inherit;
+                    text-rendering: auto;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                  }
 
-                &[href="/custom/login-form"]:after {
-                  content: '\f090';
-                  display: inline-block;
-                  font: normal normal normal 18px/1 FontAwesome !important;
-                  font-size: inherit;
-                  text-rendering: auto;
-                  -webkit-font-smoothing: antialiased;
-                  -moz-osx-font-smoothing: grayscale;
-                }
+                  &[href="/custom/login-form"]:after {
+                    content: '\f090';
+                    display: inline-block;
+                    font: normal normal normal 18px/1 FontAwesome !important;
+                    font-size: inherit;
+                    text-rendering: auto;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                  }
 
-                &[href="/custom/register-form"]:after {
-                  content: '\f234 ';
-                  display: inline-block;
-                  font: normal normal normal 18px/1 FontAwesome !important;
-                  font-size: inherit;
-                  text-rendering: auto;
-                  -webkit-font-smoothing: antialiased;
-                  -moz-osx-font-smoothing: grayscale;
+                  &[href="/custom/register-form"]:after {
+                    content: '\f234 ';
+                    display: inline-block;
+                    font: normal normal normal 18px/1 FontAwesome !important;
+                    font-size: inherit;
+                    text-rendering: auto;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                  }
                 }
               }
             }
           }
+
         }
 
       }
@@ -2323,6 +2328,11 @@ div.sharethis-inline-share-buttons > * {
     position: relative;
     display: block;
     padding: 10px 7px;
+    color: #98c35f;
+
+    &.language-link.active {
+      color: #f7b431;
+    }
   }
 
   li.en {
