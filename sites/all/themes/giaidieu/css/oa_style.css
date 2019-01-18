@@ -102,7 +102,7 @@ body.front .page-content .block-app h2.block-title:after {
     background-image: url(../images/icons/heartbeat.png);
 }
 .block-3reasons .block-content li:not(:last-child){
-	margin-bottom: 90px;
+	margin-bottom: 70px;
 }
 .block-3reasons .block-content li img{
 	float: left;
