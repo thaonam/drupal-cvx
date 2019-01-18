@@ -15,58 +15,78 @@
     <favorites_list name="drupal-7.61" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/style.css.less">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="204" column="30" selection-start-line="204" selection-start-column="30" selection-end-line="204" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/user.css.less">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node_post.css.less">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="46" column="3" selection-start-line="46" selection-start-column="3" selection-end-line="46" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--manage.tpl.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1037">
-              <caret line="61" column="36" selection-start-line="61" selection-start-column="26" selection-end-line="61" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-2.tpl.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1462">
-              <caret line="111" column="66" selection-start-line="111" selection-start-column="59" selection-end-line="111" selection-end-column="66" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.handler.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="45" column="10" selection-start-line="45" selection-start-column="10" selection-end-line="45" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5225771">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/style.css.less">
+              <provider selected="true" editor-type-id="text-editor">
+                <state>
+                  <caret line="204" column="31" selection-start-line="204" selection-start-column="31" selection-end-line="204" selection-end-column="31" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.func.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="287">
+                  <caret line="25" column="45" selection-start-line="25" selection-start-column="36" selection-end-line="25" selection-end-column="45" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.handler.js">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="420">
+                  <caret line="50" column="42" selection-start-line="50" selection-start-column="42" selection-end-line="50" selection-end-column="42" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/user-manager.css.less">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="240">
+                  <caret line="958" column="23" selection-start-line="958" selection-start-column="23" selection-end-line="958" selection-end-column="23" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--manage.tpl.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="187">
+                  <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-10.tpl.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="372">
+                  <caret line="109" column="31" selection-start-line="109" selection-start-column="31" selection-end-line="109" selection-end-column="31" />
+                  <folding>
+                    <element signature="e#2826#2833#1#HTML" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--teaser.tpl.php">
+              <provider selected="true" editor-type-id="text-editor" />
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -85,12 +105,16 @@
       <find>q</find>
       <find>block-system-user-menu</find>
       <find>8dc63f</find>
-      <find>.language-switcher-locale-url</find>
       <find>.en</find>
       <find>teaser</find>
       <find>help</find>
       <find>hook_node</find>
       <find>i.leaf</find>
+      <find>.th_cart-item</find>
+      <find>th_book-slot</find>
+      <find>th_count</find>
+      <find>content-manage</find>
+      <find>dsm</find>
     </findStrings>
     <replaceStrings>
       <replace>98c35f</replace>
@@ -117,7 +141,6 @@
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/custom.css.less" />
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/dich-vu.css.less" />
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/khach-hang.css.less" />
-        <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/responsive.css.less" />
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/san-pham.css.less" />
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/search.less" />
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/tin-tuc.css.less" />
@@ -125,15 +148,25 @@
         <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/node_post.css.less" />
         <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.module" />
         <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.helper.inc" />
-        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--manage.tpl.php" />
-        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-2.tpl.php" />
-        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.handler.js" />
+        <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/responsive.css.less" />
         <option value="$PROJECT_DIR$/sites/all/themes/giaidieu/less/style.css.less" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.func.js" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-2.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--join.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--block-10.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--full.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/status-messages.func 2.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--manage.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--manage.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-10.tpl.php" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/user-manager.css.less" />
+        <option value="$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.handler.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="953" />
+    <option name="x" value="551" />
+    <option name="y" value="51" />
     <option name="width" value="974" />
     <option name="height" value="1057" />
   </component>
@@ -161,21 +194,6 @@
               <item name="drupal-7.61" type="462c0819:PsiDirectoryNode" />
               <item name="sites" type="462c0819:PsiDirectoryNode" />
               <item name="all" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="drupal-7.61" type="b2602c69:ProjectViewProjectNode" />
-              <item name="drupal-7.61" type="462c0819:PsiDirectoryNode" />
-              <item name="sites" type="462c0819:PsiDirectoryNode" />
-              <item name="all" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="drupal-7.61" type="b2602c69:ProjectViewProjectNode" />
-              <item name="drupal-7.61" type="462c0819:PsiDirectoryNode" />
-              <item name="sites" type="462c0819:PsiDirectoryNode" />
-              <item name="all" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="custom" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="drupal-7.61" type="b2602c69:ProjectViewProjectNode" />
@@ -259,7 +277,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JavaScript" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -274,7 +292,7 @@
     </option>
   </component>
   <component name="StructureViewFactory">
-    <option name="ACTIVE_ACTIONS" value=",VISIBILITY_SORTER,ALPHA_COMPARATOR,SHOW_CLASSES" />
+    <option name="ACTIVE_ACTIONS" value=",VISIBILITY_SORTER,ALPHA_COMPARATOR" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -288,20 +306,20 @@
       <updated>1547553660901</updated>
       <workItem from="1547553663357" duration="30950000" />
       <workItem from="1547707972476" duration="9628000" />
-      <workItem from="1547776689214" duration="809000" />
+      <workItem from="1547776689214" duration="7383000" />
+      <workItem from="1547787952504" duration="7574000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41387000" />
+    <option name="totallyTimeSpent" value="55535000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.15664557" side_tool="true" weight="0.2563966" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.07401575" weight="0.29371002" />
-      <window_info id="Structure" order="2" sideWeight="0.92598426" side_tool="true" weight="0.29371002" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.07362638" visible="true" weight="0.48347548" />
+      <window_info id="Structure" order="2" sideWeight="0.9263736" side_tool="true" visible="true" weight="0.48347548" />
       <window_info anchor="bottom" id="Terminal" order="0" sideWeight="0.49946696" weight="0.3021978" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
       <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.50053304" side_tool="true" weight="0.30989012" />
@@ -321,9 +339,9 @@
     </layout>
     <layout-to-restore>
       <window_info id="Favorites" order="0" sideWeight="0.15664557" side_tool="true" weight="0.2563966" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.07401575" visible="true" weight="0.29371002" />
-      <window_info id="Structure" order="2" sideWeight="0.92598426" side_tool="true" visible="true" weight="0.29371002" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="0" sideWeight="0.49946696" visible="true" weight="0.3021978" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.07401575" visible="true" weight="0.14285715" />
+      <window_info id="Structure" order="2" sideWeight="0.92598426" side_tool="true" weight="0.29371002" />
+      <window_info anchor="bottom" id="Terminal" order="0" sideWeight="0.49946696" weight="0.3021978" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
       <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.50053304" side_tool="true" weight="0.30989012" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32967034" />
@@ -345,42 +363,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-2/th_style.css" />
-    <entry file="file://$USER_HOME$/Downloads/calculator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="19" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-2/style.css.less" />
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-2/style.css" />
-    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/templates/page.tpl.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="97" selection-start-line="97" selection-start-column="4" selection-end-line="105" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/js/hu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-31">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/js/custom.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="322" column="48" selection-start-line="322" selection-start-column="37" selection-end-line="322" selection-end-column="48" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/templates/views/views-view--node-functions--not-front-slideshow.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-510" />
@@ -522,13 +504,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/responsive.css.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="12" column="29" selection-start-line="12" selection-start-column="29" selection-end-line="12" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/lien-he.css.less">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-61" />
@@ -584,31 +559,147 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--manage.tpl.php">
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/_user-dashboard.css.less">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/style.css.less">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="61" column="36" selection-start-line="61" selection-start-column="26" selection-end-line="61" selection-end-column="36" />
+        <state>
+          <caret line="204" column="31" selection-start-line="204" selection-start-column="31" selection-end-line="204" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/responsive.css.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="96" column="14" selection-start-line="96" selection-start-column="14" selection-end-line="96" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--join.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="47" column="51" lean-forward="true" selection-start-line="47" selection-start-column="51" selection-end-line="47" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--block-10.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="760">
+          <caret line="93" selection-start-line="93" selection-end-line="93" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/status-messages.func.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="743">
+          <caret line="80" column="1" lean-forward="true" selection-end-line="81" />
+          <folding>
+            <element signature="e#55#62#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/status-messages.func 3.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="743">
+          <caret line="80" column="1" lean-forward="true" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
+          <folding>
+            <element signature="e#55#62#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/status-messages.func 4.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
+          <folding>
+            <element signature="e#55#62#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/A Thao Folder/Backup data/Tasscare/Data 04-09-2018/Cầu vồng xanh/themes/bootstrap/templates/system/status-messages.func.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="760">
+          <caret line="80" lean-forward="true" selection-end-line="80" />
+          <folding>
+            <element signature="e#55#62#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/status-messages.func 2.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="62" column="67" selection-start-line="62" selection-start-column="52" selection-end-line="62" selection-end-column="67" />
+          <folding>
+            <element signature="e#6#68#0#PHP" expanded="true" />
+            <element signature="e#55#62#1" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-2.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1462">
-          <caret line="111" column="66" selection-start-line="111" selection-start-column="59" selection-end-line="111" selection-end-column="66" />
+        <state relative-caret-position="760">
+          <caret line="140" column="6" selection-start-line="140" selection-start-column="6" selection-end-line="140" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.func.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="25" column="45" selection-start-line="25" selection-start-column="36" selection-end-line="25" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--full.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="69" selection-start-line="4" selection-start-column="69" selection-end-line="4" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--teaser.tpl.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--event--manage.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="41" column="13" selection-start-line="41" selection-start-column="10" selection-end-line="41" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/node--past-record--manage.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/views-view--node-functions--page-10.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="109" column="31" selection-start-line="109" selection-start-column="31" selection-end-line="109" selection-end-column="31" />
+          <folding>
+            <element signature="e#2826#2833#1#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/user-manager.css.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="958" column="23" selection-start-line="958" selection-start-column="23" selection-end-line="958" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/fz3temp-3/custom.handler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="45" column="10" selection-start-line="45" selection-start-column="10" selection-end-line="45" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sites/all/themes/giaidieu/less/style.css.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="204" column="30" selection-start-line="204" selection-start-column="30" selection-end-line="204" selection-end-column="30" />
+        <state relative-caret-position="420">
+          <caret line="50" column="42" selection-start-line="50" selection-start-column="42" selection-end-line="50" selection-end-column="42" />
         </state>
       </provider>
     </entry>
